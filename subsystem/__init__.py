@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_restful import Resource, Api
 from .database_interface import connect, get_asset, get_plan, get_report
-HOSTNAME = "127.0.0.1"
-PORT = "5432"
-DB_NAME = "eftest"
-UID = "gehan"
+HOSTNAME = ""
+PORT = ""
+DB_NAME = ""
+UID = ""
 PWD = ""
 app = Flask(__name__)
 api = Api(app)
