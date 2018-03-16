@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Emergency Force</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon/favicon.ico') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
@@ -45,23 +46,23 @@
             <table class="responsive-table">
               <thead>
                 <tr>
-                    <th>Asset</th>
-                    <th>Number</th>
+                    <th>Type</th>
+                    <th>Availability</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr>
-                  <td>{{asset[0][0]}}</td>
-                  <td>{{asset[0][1]}}</td>
+                  <td>{{asset[0]['name']}}</td>
+                  <td>{{asset[0]['availability']}}</td>
                 </tr>
                 <tr>
-                  <td>{{asset[1][0]}}</td>
-                  <td>{{asset[1][1]}}</td>
+                  <td>{{asset[1]['name']}}</td>
+                  <td>{{asset[1]['availability']}}</td>
                 </tr>
                 <tr>
-                  <td>{{asset[2][0]}}</td>
-                  <td>{{asset[2][1]}}</td>
+                  <td>{{asset[2]['name']}}</td>
+                  <td>{{asset[2]['availability']}}</td>
                 </tr>
               </tbody>
             </table>
@@ -79,23 +80,23 @@
             <table class="responsive-table">
               <thead>
                 <tr>
-                    <th>Reports</th>
+                    <th>Summary</th>
                     <th>Date</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr>
-                  <td>{{report[0][0]}}</td>
-                  <td>{{report[0][1]}}</td>
+                  <td>{{report[0]['summary']}}</td>
+                  <td>{{report[0]['time']}}</td>
                 </tr>
                 <tr>
-                  <td>{{report[1][0]}}</td>
-                  <td>{{report[1][1]}}</td>
+                  <td>{{report[1]['summary']}}</td>
+                  <td>{{report[1]['time']}}</td>
                 </tr>
                 <tr>
-                  <td>{{report[2][0]}}</td>
-                  <td>{{report[2][1]}}</td>
+                  <td>{{report[2]['summary']}}</td>
+                  <td>{{report[2]['time']}}</td>
                 </tr>
               </tbody>
             </table>
@@ -113,23 +114,23 @@
             <table class="responsive-table">
               <thead>
                 <tr>
-                    <th>Plan</th>
+                    <th>Details</th>
                     <th>Time</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr>
-                  <td>{{plan[0][0]}}</td>
-                  <td>{{plan[0][1]}}</td>
+                  <td>{{plan[0]['details']}}</td>
+                  <td>{{plan[0]['time']}}</td>
                 </tr>
                 <tr>
-                  <td>{{plan[1][0]}}</td>
-                  <td>{{plan[1][1]}}</td>
+                  <td>{{plan[1]['details']}}</td>
+                  <td>{{plan[1]['time']}}</td>
                 </tr>
                 <tr>
-                  <td>{{plan[2][0]}}</td>
-                  <td>{{plan[2][1]}}</td>
+                  <td>{{plan[2]['details']}}</td>
+                  <td>{{plan[2]['time']}}</td>
                 </tr>
               </tbody>
             </table>
@@ -142,7 +143,10 @@
       </div>
     </div>
   </main>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
