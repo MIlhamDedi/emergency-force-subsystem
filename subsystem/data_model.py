@@ -3,49 +3,73 @@ from datetime import datetime, date
 
 class Asset:
     """Asset Data Object
-    Attributes:
-        1. name: str
-        2. availability: int
+    Data attributes structure:
+        [
+            ...
+            (index: int, name: str, availability: int)
+            ...
+        ]
     """
-    def __init__(self, name, availability):
+    def __init__(self, data):
         try:
-            assert type(name) == str
-            assert type(availability) == int
-            self.name = name
-            self.availability = availability
+            self.json = dict()
+            for _ in data:
+                assert type(_[1]) == str
+                assert type(_[2]) == int
+                self.json[_[0]] = {
+                    "Name": _[1],
+                    "Availability": _[2],
+                }
         except AssertionError:
+            print("Found an issue in the Database")
             raise TypeError("Wrong type for Asset attributes")
 
 
 class Plan:
     """Plan Data Object
-    Attributes:
-        1. details: str
-        2. time: struct_time (import from `time` library)
+    Data attributes structure:
+        [
+            ...
+            (index: int, details: str, timestamp: datetime.datetime)
+            ...
+        ]
     """
-    def __init__(self, details, time):
+    def __init__(self, data):
         try:
-            assert type(details) == str
-            assert type(time) == datetime
-            self.details = details
-            self.time = str(time)
+            self.json = dict()
+            for _ in data:
+                assert type(_[1]) == str
+                assert type(_[2]) == datetime
+                self.json[_[0]] = {
+                    "details": _[1],
+                    "time": str(_[2]),
+                }
         except AssertionError:
-            raise TypeError("Wrong type for Plan attributes")
+            print("Found an issue in the Database")
+            raise TypeError("Wrong type for Plan Attributes")
 
 
 class Report:
     """Report Data Object
-    Attributes:
-        1. summary: str
-        2. time: struct_time (import from `time` library)
+    Data attributes structure:
+        [
+            ...
+            (index: int, summary: str, date: datetime.date)
+            ...
+        ]
     """
-    def __init__(self, summary, time):
+    def __init__(self, data):
         try:
-            assert type(summary) == str
-            assert type(time) == date
-            self.summary = summary
-            self.time = str(time)
+            self.json = dict()
+            for _ in data:
+                assert type(_[1]) == str
+                assert type(_[2]) == date
+                self.json[_[0]] = {
+                    "summary": _[1],
+                    "time": str(_[2]),
+                }
         except AssertionError:
+            print("Found an issue in the Database")
             raise TypeError("Wrong type for Report attributes")
 
 
