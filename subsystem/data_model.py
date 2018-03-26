@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 
 
 class Asset:
@@ -63,7 +63,7 @@ class Report:
             self.json = dict()
             for _ in data:
                 assert type(_[1]) == str
-                assert type(_[2]) == date
+                assert type(_[2]) == datetime
                 self.json[_[0]] = {
                     "summary": _[1],
                     "time": str(_[2]),

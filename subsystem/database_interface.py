@@ -1,5 +1,6 @@
 import psycopg2
 import uuid
+from datetime import datetime
 from subsystem.config import HOSTNAME, PORT, DB_NAME, UID, PWD
 url = "host=" + HOSTNAME + " port=" + PORT + " dbname="
 url += DB_NAME + " user=" + UID + " password=" + PWD
@@ -32,8 +33,16 @@ def get_users():
     return user_data
 
 
-def set_plan():
-    pass
+def set_plan(details, time):
+    try:
+        cursor.execute(f'''
+INSERT INTO "public"."plan"("details", "time")
+VALUES('{details}', '{time}')
+''')
+        conn.commit()
+        return 0
+    except:
+        return 1
 
 
 def set_report():
