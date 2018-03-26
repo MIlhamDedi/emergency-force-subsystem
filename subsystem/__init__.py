@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_restful import Resource, Api
 from flask_login import LoginManager, login_user, logout_user, \
-    login_required
+    login_required, current_user
 from subsystem.data_model import Asset, Plan, Report, User
 from subsystem.config import SECRET_KEY
 from psycopg2 import OperationalError
@@ -19,6 +19,10 @@ try:
         user_data[_[0]] = _[1]
 except OperationalError:
     database_working = False
+    asset_data = Asset([])
+    plan_data = Plan([])
+    report_data = Report([])
+    user_data = dict()
 app = Flask(__name__)
 api = Api(app)
 login_manager = LoginManager()
@@ -62,7 +66,6 @@ def login():
 def signup():
     error = None
     if request.method == 'POST':
-        print("yay post")
         uid = request.form.get('username')
         pwd = request.form.get('password')
         pwd_hashed = generate_password_hash(pwd)
@@ -70,7 +73,6 @@ def signup():
         add_status = add_users(uid, pwd_hashed, 'user')
         if add_status == 1:
             error = "Username already taken"
-            print("fail")
         else:
             user_data[uid] = pwd_hashed
             return redirect(url_for('login'))
@@ -93,8 +95,8 @@ def index():
         'index.html',
         asset=asset_data.json,
         plan=plan_data.json,
-        report=report_data.json) if database_working else render_template(
-            'index.html', asset_data={}, plan={}, report={}, users=None))
+        report=report_data.json,
+        user=current_user.username))
 
 
 # Error Handler
@@ -112,17 +114,17 @@ def error404():
 # API
 class asset_api(Resource):
     def get(self):
-        return asset_data.json if database_working else {}
+        return asset_data.json
 
 
 class report_api(Resource):
     def get(self):
-        return report_data.json if database_working else {}
+        return report_data.json
 
 
 class plan_api(Resource):
     def get(self):
-        return plan_data.json if database_working else {}
+        return plan_data.json
 
 
 api.add_resource(asset_api, '/api/asset')
