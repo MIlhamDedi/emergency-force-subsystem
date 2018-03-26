@@ -110,27 +110,27 @@
     var report_data = {{ report|tojson|safe }}
     var x = document.getElementById("planTable");
     for (var key in plan_data) {
-      var row = x.insertRow(-1);
-      var cell1 = row.insertCell(0);
-      var cell2 = row.insertCell(1);
+      row = x.insertRow(-1);
+      cell1 = row.insertCell(0);
+      cell2 = row.insertCell(1);
       cell1.innerHTML = plan_data[key]['details'];
       cell2.innerHTML = plan_data[key]['time'];
     }
     var y = document.getElementById("reportTable");
     for (var key in report_data) {
-      var row = y.insertRow(-1);
-      var cell1 = row.insertCell(0);
-      var cell2 = row.insertCell(1);
+      row = y.insertRow(-1);
+      cell1 = row.insertCell(0);
+      cell2 = row.insertCell(1);
       cell1.innerHTML = report_data[key]['summary'];
-      cell2.innerHTML = report_data[key]['date'];
+      cell2.innerHTML = report_data[key]['time'];
     }
     var z = document.getElementById("assetTable");
     for (var key in asset_data) {
-      var row = z.insertRow(-1);
-      var cell1 = row.insertCell(0);
-      var cell2 = row.insertCell(1);
-      cell1.innerHTML = asset_data[key]['name'];
-      cell2.innerHTML = asset_data[key]['availability'];
+      row = z.insertRow(-1);
+      cell1 = row.insertCell(0);
+      cell2 = row.insertCell(1);
+      cell1.innerHTML = asset_data[key]['Name'];
+      cell2.innerHTML = asset_data[key]['Availability'];
     }
   </script>
   <script

@@ -5,7 +5,6 @@ url = "host=" + HOSTNAME + " port=" + PORT + " dbname="
 url += DB_NAME + " user=" + UID + " password=" + PWD
 conn = psycopg2.connect(url)
 cursor = conn.cursor()
-url = "host=localhost port=5432 dbname=postgres user=gehan password="
 
 
 def get_plan():
