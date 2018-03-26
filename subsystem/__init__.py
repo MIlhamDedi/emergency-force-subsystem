@@ -43,22 +43,19 @@ def unauthorized():
 # Login/Signup Function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
+    error = "Please, login into your account"
     if request.method == 'POST':
         uid = request.form.get('username')
         pwd = request.form.get('password')
-        if (len(uid) * len(pwd)) > 0:
-            user = User(uid)
-            if uid in user_data:
-                if check_password_hash(user_data[uid], pwd):
-                    user.set_authenticated(True)
-                    if login_user(user):
-                        return redirect(url_for('index'))
-        else:
-            error = "Please fill all the boxes"
-            print(error)
-            pass
-    return render_template('login.html')
+        user = User(uid)
+        if uid in user_data:
+            if check_password_hash(user_data[uid], pwd):
+                user.set_authenticated(True)
+                if login_user(user):
+                    return redirect(url_for('index'))
+            else:
+                error = "Wrong Username or Password"
+    return render_template('login.html', error=error)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
