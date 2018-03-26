@@ -97,6 +97,11 @@ def index():
             'index.html', asset_data={}, plan={}, report={}, users=None))
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
 # API
 class asset_api(Resource):
     def get(self):
@@ -113,6 +118,6 @@ class plan_api(Resource):
         return plan_data.json if database_working else {}
 
 
-api.add_resource(asset_api, '/asset/api')
-api.add_resource(report_api, '/report/api')
-api.add_resource(plan_api, '/plan/api')
+api.add_resource(asset_api, '/api/asset')
+api.add_resource(report_api, '/api/report')
+api.add_resource(plan_api, '/api/plan')
