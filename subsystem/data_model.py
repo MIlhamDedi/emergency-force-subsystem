@@ -54,7 +54,7 @@ class Report:
     Data attributes structure:
         [
             ...
-            (index: int, summary: str, date: datetime.date)
+            (index: int, summary: str, date: datetime.datetime)
             ...
         ]
     """
@@ -73,23 +73,46 @@ class Report:
             raise TypeError("Wrong type for Report attributes")
 
 
-class Crisis:
-    """Crisis Data Object
-    Attributes:
-        1. uid: int
-        2. name: str
-        3. crisis_type: str
-        4. description: str
+class User():
+    """User Instance Class
     """
-    def __init__(self, uid, name, crisis_type, desc):
-        try:
-            assert type(uid) == int
-            assert type(uid) == int
-            assert type(uid) == int
-            assert type(uid) == int
-            self.uid = uid
-            self.name = name
-            self.crisis_type = crisis_type
-            self.desc = desc
-        except AssertionError:
-            raise TypeError("Wrong type for Crisis Attributes")
+    def __init__(self, username):
+        self.username = username
+        self.__is_admin = False
+        self.__token = None
+        self.__is_authenticated = False
+        self.__is_active = False
+        self.__is_anonymous = True
+
+    def is_authenticated(self):
+        return self.__is_authenticated
+
+    def set_authenticated(self, value):
+        self.__is_authenticated = value
+
+    def is_active(self):
+        return self.__is_active
+
+    def set_active(self, value):
+        self.__is_active = value
+
+    def is_anonymous(self):
+        return self.__is_anonymous
+
+    def set_anonymous(self, value):
+        self.__is_anonymous = value
+
+    def is_admin(self):
+        return self.__is_admin
+
+    def set_admin(self, value):
+        self.__is_admin = value
+
+    def get_token(self):
+        return self.__token
+
+    def set_token(self, value):
+        self.__token = value
+
+    def get_id(self):
+        return self.username
