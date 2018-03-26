@@ -97,9 +97,16 @@ def index():
             'index.html', asset_data={}, plan={}, report={}, users=None))
 
 
+# Error Handler
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return redirect(url_for('error404'))
+
+
+@app.route('/404')
+@login_required
+def error404():
+    return (render_template('404.html'))
 
 
 # API
