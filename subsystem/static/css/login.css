@@ -14,7 +14,7 @@ body {
 
 .input-field input[type=date]:focus + label,
 .input-field input[type=text]:focus + label,
-.input-field input[type=email]:focus + label,
+.input-field input[type=username]:focus + label,
 .input-field input[type=password]:focus + label {
     color: #e91e63;
 }
