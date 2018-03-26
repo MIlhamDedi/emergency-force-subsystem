@@ -1,4 +1,3 @@
-# import uuid
 import psycopg2
 import uuid
 from subsystem.config import HOSTNAME, PORT, DB_NAME, UID, PWD
