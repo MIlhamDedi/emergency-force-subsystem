@@ -44,19 +44,19 @@ VALUES('{details}', '{time}')
 ''')
         conn.commit()
         return 0
-    except:
+    except psycopg2.DataError:
         return 1
 
 
 def add_report(summary, time):
     try:
         cursor.execute(f'''
-INSERT INTO "public"."report"("details", "time")
+INSERT INTO "public"."report"("summary", "time")
 VALUES('{summary}', '{time}')
 ''')
         conn.commit()
         return 0
-    except:
+    except psycopg2.DataError:
         return 1
 
 
