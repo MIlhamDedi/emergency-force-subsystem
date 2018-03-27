@@ -1349,9 +1349,6 @@ header .form-inline {
       padding: 0; }
       #language-select .dropdown-menu .dropdown-item:hover {
         background: #fff; }
-      #language-select .dropdown-menu .dropdown-item .flag-icon {
-        margin-right: 0;
-        width: 25px; }
 
 .notification-show + .dropdown-menu,
 .message-show + .dropdown-menu,
