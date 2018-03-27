@@ -26,7 +26,7 @@
             <li><a href="/plan">Recent Plan</a></li>
           </ul>
           <ul class="right">
-            <li><a href="/login">Log Out</a></li>
+            <li><a href="/logout">Log Out</a></li>
           </ul>
         </div>
       </nav>
@@ -43,27 +43,14 @@
         <div class="card blue-grey darken-1">
           <div class="card-content white-text">
             <span class="card-title">Assets Availability</span>
-            <table class="responsive-table">
+            <table class="responsive-table highlight">
               <thead>
                 <tr>
                     <th>Type</th>
                     <th>Availability</th>
                 </tr>
               </thead>
-
-              <tbody>
-                <tr>
-                  <td>{{asset[0]['name']}}</td>
-                  <td>{{asset[0]['availability']}}</td>
-                </tr>
-                <tr>
-                  <td>{{asset[1]['name']}}</td>
-                  <td>{{asset[1]['availability']}}</td>
-                </tr>
-                <tr>
-                  <td>{{asset[2]['name']}}</td>
-                  <td>{{asset[2]['availability']}}</td>
-                </tr>
+              <tbody id="assetTable">
               </tbody>
             </table>
           </div>
@@ -77,27 +64,14 @@
         <div class="card blue-grey darken-1">
           <div class="card-content white-text">
             <span class="card-title">Reports {{message}} </span>
-            <table class="responsive-table">
+            <table class="responsive-table highlight">
               <thead>
                 <tr>
                     <th>Summary</th>
                     <th>Date</th>
                 </tr>
               </thead>
-
-              <tbody>
-                <tr>
-                  <td>{{report[0]['summary']}}</td>
-                  <td>{{report[0]['time']}}</td>
-                </tr>
-                <tr>
-                  <td>{{report[1]['summary']}}</td>
-                  <td>{{report[1]['time']}}</td>
-                </tr>
-                <tr>
-                  <td>{{report[2]['summary']}}</td>
-                  <td>{{report[2]['time']}}</td>
-                </tr>
+              <tbody id="reportTable">
               </tbody>
             </table>
           </div>
@@ -111,27 +85,14 @@
         <div class="card blue-grey darken-1">
           <div class="card-content white-text">
             <span class="card-title">Plan</span>
-            <table class="responsive-table">
+            <table class="responsive-table highlight">
               <thead>
                 <tr>
                     <th>Details</th>
                     <th>Time</th>
                 </tr>
               </thead>
-
-              <tbody>
-                <tr>
-                  <td>{{plan[0]['details']}}</td>
-                  <td>{{plan[0]['time']}}</td>
-                </tr>
-                <tr>
-                  <td>{{plan[1]['details']}}</td>
-                  <td>{{plan[1]['time']}}</td>
-                </tr>
-                <tr>
-                  <td>{{plan[2]['details']}}</td>
-                  <td>{{plan[2]['time']}}</td>
-                </tr>
+              <tbody id="planTable">
               </tbody>
             </table>
             </div>
@@ -143,6 +104,35 @@
       </div>
     </div>
   </main>
+  <script type="text/javascript">
+    var plan_data = {{ plan|tojson|safe }}
+    var asset_data = {{ asset|tojson|safe }}
+    var report_data = {{ report|tojson|safe }}
+    var x = document.getElementById("planTable");
+    for (var key in plan_data) {
+      row = x.insertRow(-1);
+      cell1 = row.insertCell(0);
+      cell2 = row.insertCell(1);
+      cell1.innerHTML = plan_data[key]['details'];
+      cell2.innerHTML = plan_data[key]['time'];
+    }
+    var y = document.getElementById("reportTable");
+    for (var key in report_data) {
+      row = y.insertRow(-1);
+      cell1 = row.insertCell(0);
+      cell2 = row.insertCell(1);
+      cell1.innerHTML = report_data[key]['summary'];
+      cell2.innerHTML = report_data[key]['time'];
+    }
+    var z = document.getElementById("assetTable");
+    for (var key in asset_data) {
+      row = z.insertRow(-1);
+      cell1 = row.insertCell(0);
+      cell2 = row.insertCell(1);
+      cell1.innerHTML = asset_data[key]['Name'];
+      cell2.innerHTML = asset_data[key]['Availability'];
+    }
+  </script>
   <script
     src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

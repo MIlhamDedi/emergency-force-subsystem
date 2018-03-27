@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>404 Page not Found</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon/favicon.ico') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+html, body{
+  height: 100%;
+}
+main{
+  height: 100%;
+}
+#img-wrapper{
+  height: 100%;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper indigo">
+          <a href="#" class="brand-logo center hide-on-med-and-down">Emergency Force</a>
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+          <ul class="left hide-on-med-and-down">
+            <li><a href="/asset">Asset</a></li>
+            <li><a href="/report">Report</a></li>
+            <li><a href="/plan">Recent Plan</a></li>
+          </ul>
+          <ul class="right">
+            <li><a href="/logout">Log Out</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <ul class="sidenav" id="mobile-demo">
+        <li><a href="/asset">Asset</a></li>
+        <li><a href="/report">Report</a></li>
+        <li><a href="/plan">Recent Plan</a></li>
+    </ul>
+  </header>
+  <main>
+    <div class="container valign-wrapper" id="img-wrapper">
+      <img class="responsive-img" src="{{ url_for('static',filename='images/logo_404.png') }}" alt="404 Page not found">
+    </div>
+  </main>
+</body>
+</html>
