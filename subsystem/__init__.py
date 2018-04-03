@@ -59,7 +59,7 @@ def login():
                     return redirect(url_for('index'))
             else:
                 error = "Wrong Username or Password"
-    return render_template('login.html', error=error)
+    return render_template('login_new.html', error=error)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
