@@ -88,15 +88,13 @@ def logout():
 
 # Dashboard Website
 @app.route('/')
-@login_required
 def index():
     global asset_data, plan_data, report_data
     return (render_template(
-        'index.html',
+        'dashboard.html',
         asset=asset_data.json,
         plan=plan_data.json,
-        report=report_data.json,
-        user=current_user.username))
+        report=report_data.json))
 
 
 # Error Handler
