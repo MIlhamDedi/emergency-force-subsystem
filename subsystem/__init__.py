@@ -32,9 +32,9 @@ app.secret_key = SECRET_KEY
 
 # User Handler
 @login_manager.user_loader
-def load_user(user_id):
-    if user_id in user_data:
-        return User(user_id)
+def load_user(user):
+    if user.get_id() in user_data:
+        return user
     else:
         return None
 
@@ -59,7 +59,7 @@ def login():
                     return redirect(url_for('index'))
             else:
                 error = "Wrong Username or Password"
-    return render_template('login_new.html', error=error)
+    return render_template('login.html', error=error)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -88,13 +88,15 @@ def logout():
 
 # Dashboard Website
 @app.route('/')
+@login_required
 def index():
     global asset_data, plan_data, report_data
     return (render_template(
         'dashboard.html',
         asset=asset_data.json,
         plan=plan_data.json,
-        report=report_data.json))
+        report=report_data.json,
+        user=current_user.username))
 
 
 # Error Handler
