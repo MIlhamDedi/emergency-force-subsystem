@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_restful import Resource, Api
-from flask_login import LoginManager, login_user, logout_user, \
+from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
 from subsystem.data_model import Asset, Plan, Report, User
 from subsystem.config import SECRET_KEY
-from psycopg2 import OperationalError
+from psycopg2 import OperationalError, ProgrammingError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 database_working = True
@@ -17,7 +17,7 @@ try:
     user_data = dict()
     for _ in get_users():
         user_data[_[0]] = _[1]
-except OperationalError:
+except OperationalError or ProgrammingError:
     database_working = False
     asset_data = Asset([])
     plan_data = Plan([])
