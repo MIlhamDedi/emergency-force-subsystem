@@ -17,7 +17,7 @@ try:
     user_data = dict()
     for _ in get_users():
         user_data[_[0]] = _[1]
-except OperationalError or ProgrammingError:
+except (OperationalError, ProgrammingError):
     database_working = False
     asset_data = Asset([])
     plan_data = Plan([])
