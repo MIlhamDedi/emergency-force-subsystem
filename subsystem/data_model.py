@@ -38,11 +38,12 @@ class Plan:
         try:
             self.json = dict()
             for _ in data:
-                assert type(_[1]) == str
-                assert type(_[2]) == datetime
+                assert type(_[2]) == str
+                assert type(_[3]) == datetime
                 self.json[_[0]] = {
-                    "details": _[1],
-                    "time": str(_[2]),
+                    "crisis_id": _[1],
+                    "details": _[2],
+                    "time": str(_[3]),
                 }
         except AssertionError:
             print("Found an issue in the Database")
@@ -62,11 +63,12 @@ class Report:
         try:
             self.json = dict()
             for _ in data:
-                assert type(_[1]) == str
-                assert type(_[2]) == datetime
+                assert type(_[2]) == str
+                assert type(_[3]) == datetime
                 self.json[_[0]] = {
-                    "summary": _[1],
-                    "time": str(_[2]),
+                    "crisis_id": _[1],
+                    "details": _[2],
+                    "time": str(_[3]),
                 }
         except AssertionError:
             print("Found an issue in the Database")
