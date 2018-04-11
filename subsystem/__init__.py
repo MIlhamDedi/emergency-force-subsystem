@@ -135,12 +135,15 @@ class plan_api(Resource):
 
     def put(self, todo_id):
         args = parser.parse_args()
-        plan_data.addPlan(args['plan_id'], {
-            "crisis_id": args['crisis_id'],
-            "details": args['details'],
-            "time": args['time']
-        })
-        return 200
+        try:
+            plan_data.addPlan(args['plan_id'], {
+                "crisis_id": args['crisis_id'],
+                "details": args['details'],
+                "time": args['time']
+            })
+            return 200
+        except:
+            return "Wrong Plan Data"
 
 
 api.add_resource(asset_api, '/api/asset')
