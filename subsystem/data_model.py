@@ -11,6 +11,7 @@ class Asset:
             ...
         ]
     """
+
     def __init__(self, data):
         try:
             self.json = dict()
@@ -35,6 +36,7 @@ class Plan:
             ...
         ]
     """
+
     def __init__(self, data):
         try:
             self.json = dict()
@@ -52,7 +54,8 @@ class Plan:
 
     def addPlan(self, plan_id, plan_data):
         self.json[plan_id] = plan_data
-        add_plan(plan_id, plan_data["crisis_id"], plan_data["details"], plan_data["time"])
+        add_plan(plan_id, plan_data["crisis_id"], plan_data["details"],
+                 plan_data["time"])
 
 
 class Report:
@@ -64,6 +67,7 @@ class Report:
             ...
         ]
     """
+
     def __init__(self, data):
         try:
             self.json = dict()
@@ -83,6 +87,7 @@ class Report:
 class User():
     """User Instance Class
     """
+
     def __init__(self, username):
         self.username = username
         self.__is_admin = False

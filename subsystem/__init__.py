@@ -133,7 +133,7 @@ class plan_api(Resource):
     def get(self):
         return plan_data.json
 
-    def put(self, todo_id):
+    def put(self):
         args = parser.parse_args()
         try:
             plan_data.addPlan(args['plan_id'], {
