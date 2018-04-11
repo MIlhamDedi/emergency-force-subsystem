@@ -33,8 +33,8 @@ app.secret_key = SECRET_KEY
 # User Handler
 @login_manager.user_loader
 def load_user(user):
-    if user.get_id() in user_data:
-        return user
+    if user in user_data:
+        return User(user)
     else:
         return None
 
