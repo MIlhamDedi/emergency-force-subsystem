@@ -1,4 +1,5 @@
 from datetime import datetime
+from subsystem.database_interface import add_plan, add_report
 
 
 class Asset:
@@ -48,6 +49,10 @@ class Plan:
         except AssertionError:
             print("Found an issue in the Database")
             raise TypeError("Wrong type for Plan Attributes")
+
+    def addPlan(self, plan_id, plan_data):
+        self.json[plan_id] = plan_data
+        add_plan(plan_id, plan_data["crisis_id"], plan_data["details"], plan_data["time"])
 
 
 class Report:

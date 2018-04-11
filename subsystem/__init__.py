@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
 from subsystem.data_model import Asset, Plan, Report, User
@@ -112,6 +112,13 @@ def error404():
 
 
 # API
+parser = reqparse.RequestParser()
+parser.add_argument('plan_id')
+parser.add_argument('crisis_id')
+parser.add_argument('details')
+parser.add_argument('time')
+
+
 class asset_api(Resource):
     def get(self):
         return asset_data.json
@@ -125,6 +132,15 @@ class report_api(Resource):
 class plan_api(Resource):
     def get(self):
         return plan_data.json
+
+    def put(self, todo_id):
+        args = parser.parse_args()
+        plan_data.addPlan(args['plan_id'], {
+            "crisis_id": args['crisis_id'],
+            "details": args['details'],
+            "time": args['time']
+        })
+        return 200
 
 
 api.add_resource(asset_api, '/api/asset')
