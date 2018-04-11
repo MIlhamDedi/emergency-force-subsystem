@@ -35,11 +35,11 @@ def set_asset():
     pass
 
 
-def add_plan(details, time):
+def add_plan(crisis_id, details, time):
     try:
         cursor.execute(f'''
-INSERT INTO "public"."plan"("details", "time")
-VALUES('{details}', '{time}')
+INSERT INTO "public"."plan"("crisis_id", "details", "time")
+VALUES('{crisis_id}', '{details}', '{time}')
 ''')
         conn.commit()
         return 0
@@ -47,11 +47,11 @@ VALUES('{details}', '{time}')
         return 1
 
 
-def add_report(summary, time):
+def add_report(crisis_id, summary, time):
     try:
         cursor.execute(f'''
-INSERT INTO "public"."report"("summary", "time")
-VALUES('{summary}', '{time}')
+INSERT INTO "public"."report"("crisis_id","summary", "time")
+VALUES('{crisis_id}', '{summary}', '{time}')
 ''')
         conn.commit()
         return 0
