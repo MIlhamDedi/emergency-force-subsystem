@@ -115,6 +115,8 @@ def error404():
 parser = reqparse.RequestParser()
 parser.add_argument('plan_id')
 parser.add_argument('crisis_id')
+parser.add_argument('report_id')
+parser.add_argument('asset_id')
 parser.add_argument('details')
 parser.add_argument('time')
 
@@ -127,6 +129,13 @@ class asset_api(Resource):
 class report_api(Resource):
     def get(self):
         return report_data.json
+
+    def put(self):
+        args = parser.parse_args()
+        try:
+            return args
+        except KeyError:
+            return 400, "Wrong Report Data"
 
 
 class plan_api(Resource):
@@ -142,8 +151,8 @@ class plan_api(Resource):
                 "time": args['time']
             })
             return 200
-        except:
-            return "Wrong Plan Data"
+        except KeyError:
+            return 400, "Wrong Plan Data"
 
 
 api.add_resource(asset_api, '/api/asset')
