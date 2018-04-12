@@ -61,7 +61,7 @@ desired effect
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="index.html" class="logo">
+    <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini">E<b>F</b></span>
       <!-- logo for regular state and mobile devices -->
@@ -452,6 +452,17 @@ desired effect
           $(this).attr('src', "{{ url_for('static', filename='images/account_logo.jpg') }}");
       });
   });
+</script>
+<script>
+$.get("/api/asset", function(data, status){
+  console.log(data);
+}, "json");
+$.get("/api/report", function(data, status){
+  console.log(data);
+}, "json");
+$.get("/api/plan", function(data, status){
+  console.log(data);
+}, "json");
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

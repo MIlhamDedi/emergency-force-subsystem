@@ -93,12 +93,7 @@ def logout():
 @login_required
 def index():
     global asset_data, plan_data, report_data
-    return (render_template(
-        'index.html',
-        asset=asset_data.json,
-        plan=plan_data.json,
-        report=report_data.json,
-        user=current_user.username))
+    return (render_template('index.html', user=current_user.username))
 
 
 # Error Handler
