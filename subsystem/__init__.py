@@ -48,6 +48,7 @@ def unauthorized():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = "Please, login into your account"
+    color = "#666"
     if request.method == 'POST':
         uid = request.form.get('username')
         pwd = request.form.get('password')
@@ -59,7 +60,11 @@ def login():
                     return redirect(url_for('index'))
             else:
                 error = "Wrong Username or Password"
-    return render_template('login.html', error=error)
+                color = "#f00"
+        else:
+            error = "Wrong Username or Password"
+            color = "#f00"
+    return render_template('login.html', error=error, color=color)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
