@@ -97,7 +97,7 @@ def logout():
 def index():
     global asset_data, plan_data, report_data
     return (render_template(
-        'dashboard.html',
+        'index.html',
         asset=asset_data.json,
         plan=plan_data.json,
         report=report_data.json,
