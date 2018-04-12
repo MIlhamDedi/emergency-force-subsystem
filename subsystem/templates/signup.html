@@ -35,32 +35,38 @@
         background-size:inherit;
         background-position:inherit;
       }
+      .shadow-lg{
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+      }
+      .round-corner{
+        border-radius: 5px;
+      }
     </style>
 
 </head>
 <body class="hold-transition login-page bg-image">
 <div class="login-box">
   <div class="login-logo">
-    <img src="{{ url_for('static', filename='images/favicon/android-chrome-144x144.png') }}" alt="">
-    <a href="dashboard.html">Emergency<b>Force</b></a>
+    <img src="{{ url_for('static', filename='images/favicon/android-chrome-144x144.png') }}" style="filter: invert(100%);" alt="">
+    <p style="color: #FAFAFA; text-shadow: 0 0 10px rgba(0,0,0,0.5), -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; ">Emergency<b>Force</b></p>
   </div>
   <!-- /.login-logo -->
-  <div class="register-box-body">
+  <div class="register-box-body shadow-lg round-corner">
       <p class="login-box-msg" >Register a new membership</p>
 
     <form method="post">
       <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="Username" name="username" id="username" required>
+        <input type="text" class="form-control round-corner" placeholder="Username" name="username" id="username" required>
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password" id="password" onblur="check()" oninput="check2()">
+        <input type="password" class="form-control round-corner" placeholder="Password" id="password" onblur="check()" oninput="check2()" required>
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input id="repassword" type="password" class="form-control" placeholder="Retype password" onblur="check()" oninput="check2()" onfocus="document.getElementById('message').style.visibility = 'collapse';">
+        <input id="repassword" type="password" class="form-control round-corner" placeholder="Retype password" onblur="check()" oninput="check2()" onfocus="document.getElementById('message').style.display = 'none';">
         <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
-        <div id="message" style="visibility: collapse">
+        <div id="message" style="display: none">
           <p style="color:red">These passwords don't match</p>
         </div>
       </div>
@@ -73,7 +79,7 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat" id="submit-button" disabled>Register</button>
+          <button type="submit" class="btn btn-primary btn-block shadow-lg" id="submit-button" disabled>Register</button>
         </div>
         <!-- /.col -->
       </div>
@@ -93,9 +99,9 @@
 <script>
   function check() {
     if (document.getElementById('repassword').value != document.getElementById('password').value) {
-        document.getElementById("message").style.visibility = "visible";
+        document.getElementById("message").style.display = "block";
     } else {
-        document.getElementById("message").style.visibility = "collapse";
+        document.getElementById("message").style.display = "none";
     }
   }
   function check2() {
