@@ -47,6 +47,7 @@ def unauthorized():
 # Login/Signup Function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    print(current_user.username)
     error = "false"
     if request.method == 'POST':
         uid = request.form.get('username')
@@ -93,6 +94,7 @@ def logout():
 @login_required
 def index():
     global asset_data, plan_data, report_data
+    print(current_user.username)
     return (render_template(
         'index.html',
         asset=asset_data.json,
@@ -110,7 +112,8 @@ def page_not_found(e):
 @app.route('/404')
 @login_required
 def error404():
-    return (render_template('404.html'))
+    print(current_user.username)
+    return (render_template('404.html', user=current_user.username))
 
 
 # API
