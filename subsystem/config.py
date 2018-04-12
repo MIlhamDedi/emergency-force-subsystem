@@ -7,4 +7,4 @@ POSTGRES_URI = os.environ['DATABASE_URL']
 # 2. postgres://UID:PWD@HOSTNAME:PORT/DB_NAME
 
 # App secret key (random)
-SECRET_KEY = uuid4()
+SECRET_KEY = str(uuid4())
