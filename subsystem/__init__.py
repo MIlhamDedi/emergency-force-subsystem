@@ -47,7 +47,6 @@ def unauthorized():
 # Login/Signup Function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    print(current_user.username)
     error = "false"
     if request.method == 'POST':
         uid = request.form.get('username')
