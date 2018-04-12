@@ -1,9 +1,7 @@
 import psycopg2
 import uuid
-from subsystem.config import HOSTNAME, PORT, DB_NAME, UID, PWD
-url = "host=" + HOSTNAME + " port=" + PORT + " dbname="
-url += DB_NAME + " user=" + UID + " password=" + PWD
-conn = psycopg2.connect(url)
+from subsystem.config import POSTGRES_URI
+conn = psycopg2.connect(POSTGRES_URI)
 cursor = conn.cursor()
 
 
