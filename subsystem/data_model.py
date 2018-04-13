@@ -5,11 +5,13 @@ from subsystem.database_interface import add_plan, add_report, add_crisis
 class Asset:
     """Asset Data Object
     Data attributes structure:
-        [
-            ...
-            (index: int, name: str, availability: int)
-            ...
-        ]
+        [...,
+        (
+            asset_id: int,
+            name: str,
+            availability: int
+        ),
+        ...]
     """
 
     def __init__(self, data):
@@ -30,11 +32,14 @@ class Asset:
 class Plan:
     """Plan Data Object
     Data attributes structure:
-        [
-            ...
-            (index: int, details: str, timestamp: datetime.datetime)
-            ...
-        ]
+        [...,
+        (
+            plan_id: int,
+            crisis_id: int
+            details: str,
+            timestamp: datetime.datetime
+        ),
+        ...]
     """
 
     def __init__(self, data):
@@ -63,7 +68,7 @@ class Crisis:
     Data attributes structure:
         [...,
         (
-            id: int,
+            crisis_id: int,
             type: str,
             details: str,
             timestamp: datetime.datetime
@@ -96,11 +101,14 @@ class Crisis:
 class Report:
     """Report Data Object
     Data attributes structure:
-        [
-            ...
-            (index: int, summary: str, date: datetime.datetime)
-            ...
-        ]
+        [...,
+        (
+            report_id: int,
+            crisis_id: int,
+            summary: str,
+            date: datetime.datetime
+        ),
+        ...]
     """
 
     def __init__(self, data):
