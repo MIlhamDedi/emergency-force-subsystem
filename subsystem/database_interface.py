@@ -23,6 +23,12 @@ def get_asset():
     return asset_data
 
 
+def get_crisis():
+    cursor.execute('select * from crisis')
+    crisis_data = cursor.fetchall()
+    return crisis_data
+
+
 def get_users():
     cursor.execute('select * from account')
     user_data = cursor.fetchall()
@@ -50,6 +56,18 @@ def add_report(crisis_id, summary, time):
         cursor.execute(f'''
 INSERT INTO "public"."report"("crisis_id","summary", "time")
 VALUES('{crisis_id}', '{summary}', '{time}')
+''')
+        conn.commit()
+        return 0
+    except psycopg2.DataError:
+        return 1
+
+
+def add_crisis(crisis_id, crisis_type, description, time):
+    try:
+        cursor.execute(f'''
+INSERT INTO "public"."plan"("id", "type", "description", "time")
+VALUES('{crisis_id}', '{crisis_type}', '{description}', '{time}')
 ''')
         conn.commit()
         return 0

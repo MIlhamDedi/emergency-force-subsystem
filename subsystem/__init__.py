@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_restful import Resource, Api, reqparse
 from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
-from subsystem.data_model import Asset, Plan, Report, User
+from subsystem.data_model import Asset, Plan, Report, User, Crisis
 from subsystem.config import SECRET_KEY
 from psycopg2 import OperationalError, ProgrammingError
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -10,10 +10,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 database_working = True
 try:
     from subsystem.database_interface import get_asset, get_plan, get_report, \
-        get_users, add_users
+        get_users, get_crisis, add_users
     asset_data = Asset(get_asset())
     plan_data = Plan(get_plan())
     report_data = Report(get_report())
+    crisis_data = Crisis(get_crisis())
     user_data = dict()
     for _ in get_users():
         user_data[_[0]] = _[1]
@@ -22,6 +23,7 @@ except (OperationalError, ProgrammingError):
     asset_data = Asset([])
     plan_data = Plan([])
     report_data = Report([])
+    crisis_data = Crisis([])
     user_data = dict()
 app = Flask(__name__)
 api = Api(app)
@@ -115,6 +117,8 @@ parser.add_argument('crisis_id')
 parser.add_argument('report_id')
 parser.add_argument('asset_id')
 parser.add_argument('details')
+parser.add_argument('description')
+parser.add_argument('type')
 parser.add_argument('time')
 
 
@@ -152,6 +156,29 @@ class plan_api(Resource):
             return 400, "Wrong Plan Data"
 
 
+class crisis_api(Resource):
+    def get(self):
+        return crisis_data.json
+
+    def put(self):
+        args = parser.parse_args()
+        try:
+            crisis_data.addCrisis(args['crisis_id'], {
+                "type": args['type'],
+                "description": args['description'],
+                "time": args['time']
+            })
+            plan_data.addPlan(args['plan_id'], {
+                "crisis_id": args['crisis_id'],
+                "details": args['details'],
+                "time": args['time']
+            })
+            return 200
+        except KeyError:
+            return 400, "Wrong Crisis Data"
+
+
 api.add_resource(asset_api, '/api/asset')
 api.add_resource(report_api, '/api/report')
 api.add_resource(plan_api, '/api/plan')
+api.add_resource(crisis_api, '/api/crisis')

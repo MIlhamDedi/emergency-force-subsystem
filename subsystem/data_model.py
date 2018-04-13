@@ -1,5 +1,5 @@
 from datetime import datetime
-from subsystem.database_interface import add_plan, add_report
+from subsystem.database_interface import add_plan, add_report, add_crisis
 
 
 class Asset:
@@ -58,6 +58,41 @@ class Plan:
                  plan_data["time"])
 
 
+class Crisis:
+    """Crisis Data Object
+    Data attributes structure:
+        [...,
+        (
+            id: int,
+            type: str,
+            details: str,
+            timestamp: datetime.datetime
+        )
+        ...]
+    """
+
+    def __init__(self, data):
+        try:
+            self.json = dict()
+            for _ in data:
+                assert type(_[1]) == str
+                assert type(_[2]) == str
+                assert type(_[3]) == datetime
+                self.json[_[0]] = {
+                    "type": _[1],
+                    "description": _[2],
+                    "time": str(_[3]),
+                }
+        except AssertionError:
+            print("Found an issue in the Database")
+            raise TypeError("Wrong type for Plan Attributes")
+
+    def addCrisis(self, crisis_id, crisis_data):
+        self.json[crisis_id] = crisis_data
+        add_crisis(crisis_id, crisis_data['crisis_type'],
+                   crisis_data['description'], crisis_data['time'])
+
+
 class Report:
     """Report Data Object
     Data attributes structure:
@@ -82,6 +117,10 @@ class Report:
         except AssertionError:
             print("Found an issue in the Database")
             raise TypeError("Wrong type for Report attributes")
+
+    def addReport(self, report_data):
+        add_report(report_data['crisis_id'], report_data['summary'],
+                   report_data['time'])
 
 
 class User():
