@@ -1,8 +1,16 @@
 import psycopg2
 import uuid
 from subsystem.config import POSTGRES_URI
-conn = psycopg2.connect(POSTGRES_URI)
-cursor = conn.cursor()
+DATABASE_UP = False
+DATABASE_ENV = False
+if POSTGRES_URI:
+    DATABASE_ENV = True
+    try:
+        conn = psycopg2.connect(POSTGRES_URI)
+        cursor = conn.cursor()
+        DATABASE_UP = True
+    except psycopg2.OperationalError:
+        pass
 
 
 def get_plan():

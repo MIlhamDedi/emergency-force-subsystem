@@ -4,13 +4,10 @@ from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
 from subsystem.data_model import Asset, Plan, Report, User, Crisis
 from subsystem.config import SECRET_KEY
-from psycopg2 import OperationalError, ProgrammingError
 from werkzeug.security import check_password_hash, generate_password_hash
-
-database_working = True
-try:
-    from subsystem.database_interface import get_asset, get_plan, get_report, \
-        get_users, get_crisis, add_users
+from subsystem.database_interface import get_asset, get_plan, get_report, \
+    get_users, get_crisis, add_users, DATABASE_ENV, DATABASE_UP
+if DATABASE_ENV and DATABASE_UP:
     asset_data = Asset(get_asset())
     plan_data = Plan(get_plan())
     report_data = Report(get_report())
@@ -18,13 +15,13 @@ try:
     user_data = dict()
     for _ in get_users():
         user_data[_[0]] = _[1]
-except (OperationalError, ProgrammingError):
-    database_working = False
+else:
     asset_data = Asset([])
     plan_data = Plan([])
     report_data = Report([])
     crisis_data = Crisis([])
     user_data = dict()
+    print("Issue in Database\nUsing Empty Data")
 app = Flask(__name__)
 api = Api(app)
 login_manager = LoginManager()
