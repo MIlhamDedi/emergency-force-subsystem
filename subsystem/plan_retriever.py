@@ -24,6 +24,6 @@ def get_plan():
                     if r2.status_code == 400:
                         print(f"Wrong Plan Format on Plan from {plan_time}")
             LAST_CHECK = datetime.now()
-            time.sleep(15)
+            time.sleep(60)
         except (KeyboardInterrupt, SystemExit):
             break
