@@ -1,15 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_restful import Resource, Api
+from flask import render_template, request, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
+from flask_api import FlaskAPI
 from subsystem.data_model import db, Asset, Plan, Report, User
 from subsystem.config import SECRET_KEY, POSTGRES_URI
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import DataError
 from uuid import uuid4
 
-app = Flask(__name__)
-api = Api(app)
+app = FlaskAPI(__name__)
 app.secret_key = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -18,20 +17,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
-    return app
-
-
 ########################
 #     Login/Signup     #
 ########################
 @login_manager.user_loader
 def load_user(user_id):
-    print(User.query.filter_by(username=user_id).first())
     return User.query.filter_by(username=user_id).first()
 
 
@@ -109,11 +99,9 @@ def error404():
 ###############
 #     API     #
 ###############
-class asset_api(Resource):
-    def get(self):
-        return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
-
-    def post(self):
+@app.route("/api/asset", methods=['GET', 'POST'])
+def asset():
+    if request.method == 'POST':
         try:
             newAsset = Asset(
                 name=request.form['name'],
@@ -130,13 +118,12 @@ class asset_api(Resource):
             return "Not Enough data", 400
         except DataError:
             return "Wrong Type of Data", 400
+    return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
 
 
-class report_api(Resource):
-    def get(self):
-        return [a.convert() for a in Report.query.all()]
-
-    def post(self):
+@app.route("/api/report", methods=['GET', 'POST'])
+def report():
+    if request.method == 'POST':
         # TODO: Add change in asset here
         try:
             newReport = Report(
@@ -160,13 +147,12 @@ class report_api(Resource):
             return "Not Enough Data", 400
         except DataError:
             return "Wrong Type of Data", 400
+    return [a.convert() for a in Report.query.all()]
 
 
-class plan_api(Resource):
-    def get(self):
-        return [a.convert() for a in Plan.query.all()]
-
-    def post(self):
+@app.route("/api/plan", methods=['GET', 'POST'])
+def reports():
+    if request.method == 'POST':
         try:
             newPlan = Plan(
                 crisis_id=request.form['crisis_id'],
@@ -185,8 +171,4 @@ class plan_api(Resource):
             return "Not Enough data", 400
         except DataError:
             return "Wrong Type of Data", 400
-
-
-api.add_resource(asset_api, '/api/asset')
-api.add_resource(report_api, '/api/report')
-api.add_resource(plan_api, '/api/plan')
+    return [a.convert() for a in Plan.query.all()]
