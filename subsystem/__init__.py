@@ -1,20 +1,28 @@
-from flask import render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
+from flask_restplus import Resource, Api
 from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
-from flask_api import FlaskAPI
 from subsystem.data_model import db, Asset, Plan, Report, User
 from subsystem.config import SECRET_KEY, POSTGRES_URI
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import DataError
 from uuid import uuid4
 
-app = FlaskAPI(__name__)
+app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    return app
 
 
 ########################
@@ -99,9 +107,16 @@ def error404():
 ###############
 #     API     #
 ###############
-@app.route("/api/asset", methods=['GET', 'POST'])
-def asset():
-    if request.method == 'POST':
+api = Api(app, doc='/api/')
+
+
+@api.route('/api/asset')
+class asset_api(Resource):
+    def get(self):
+        return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
+
+    def post(self):
+        print(request)
         try:
             newAsset = Asset(
                 name=request.form['name'],
@@ -118,12 +133,14 @@ def asset():
             return "Not Enough data", 400
         except DataError:
             return "Wrong Type of Data", 400
-    return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
 
 
-@app.route("/api/report", methods=['GET', 'POST'])
-def report():
-    if request.method == 'POST':
+@api.route('/api/report')
+class report_api(Resource):
+    def get(self):
+        return [a.convert() for a in Report.query.all()]
+
+    def post(self):
         # TODO: Add change in asset here
         try:
             newReport = Report(
@@ -147,12 +164,14 @@ def report():
             return "Not Enough Data", 400
         except DataError:
             return "Wrong Type of Data", 400
-    return [a.convert() for a in Report.query.all()]
 
 
-@app.route("/api/plan", methods=['GET', 'POST'])
-def reports():
-    if request.method == 'POST':
+@api.route('/api/plan')
+class plan_api(Resource):
+    def get(self):
+        return [a.convert() for a in Plan.query.all()]
+
+    def post(self):
         try:
             newPlan = Plan(
                 crisis_id=request.form['crisis_id'],
@@ -171,4 +190,3 @@ def reports():
             return "Not Enough data", 400
         except DataError:
             return "Wrong Type of Data", 400
-    return [a.convert() for a in Plan.query.all()]
