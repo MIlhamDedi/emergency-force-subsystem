@@ -316,6 +316,25 @@
           $(this).attr('src', "{{ url_for('static', filename='images/account_logo.jpg') }}");
       });
   });
+  function addReport(crisis_id, assets_used, casualty, details, time){
+    $.post( "/api/report", {'crisis_id': crisis_id, 'assets_used': assets_used, 'casualty': casualty, 'details': details, 'time': time})
+      .done(function() {
+        alert('done')
+      })
+      .fail(function() {
+        alert('fail')
+      })
+  }
+
+  function updatePlan(plan_id, progress){
+    $.post( "/api/plan/" + str(plan_id), {'progress': progress})
+      .done(function() {
+        alert('done')
+      })
+      .fail(function() {
+        alert('fail')
+      })
+  }
 
   function addEntry(listId,dataList){
     for (var entry in dataList) {
