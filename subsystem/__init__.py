@@ -116,7 +116,6 @@ class asset_api(Resource):
         return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
 
     def post(self):
-        print(request)
         try:
             newAsset = Asset(
                 name=request.form['name'],
