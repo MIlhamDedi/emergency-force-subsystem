@@ -359,7 +359,6 @@
 var assetData;
 var reportData;
 var planData;
-var crisisData;
 const assetPromise = new Promise((resolve, reject) => {
   $.get("/api/asset", function(data, status){
     assetData = data
@@ -375,12 +374,6 @@ const reportPromise = new Promise((resolve, reject) => {
 const planPromise = new Promise((resolve, reject) => {
   $.get("/api/plan", function(data, status){
     planData = data
-    resolve("Success")
-  }, "json");
-});
-const crisisPromise = new Promise((resolve, reject) => {
-  $.get("/api/crisis", function(data, status){
-    crisisData = data
     resolve("Success")
   }, "json");
 });

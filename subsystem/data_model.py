@@ -36,12 +36,14 @@ class Plan(db.Model):
             crisis_id: int
             details: str,
             time: datetime.datetime
+            progress: int (-1=not-yet-executed; 0=in-progress; 1=Finished)
         ]
     """
     id = db.Column(db.Integer, primary_key=True)
     crisis_id = db.Column(db.Integer)
     details = db.Column(db.String)
     time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    progress = db.Column(db.Integer, nullable=False, default=1)
 
     def __repr__(self):
         return f'<Plan {self.id}){self.details}>'
@@ -51,7 +53,8 @@ class Plan(db.Model):
             "id": self.id,
             "crisis_id": self.crisis_id,
             "details": self.details,
-            "time": str(self.time)
+            "time": str(self.time),
+            "progress": self.progress
         }
 
 

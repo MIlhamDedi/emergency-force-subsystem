@@ -28,6 +28,7 @@
         "crisis_id": plan.crisis_id -> (int),
         "details": plan.details -> (str) -> "((asset.id, number),...)",
         "time": plan.time -> (str) -> "YYYY-MM-DD HH:mm:ss",
+        "progress": plan.progress -> (int) -> (-1=not-yet-executed, 0=in-progress, 1=finished)
     },
     ...
 ]
