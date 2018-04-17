@@ -20,3 +20,6 @@ You can install python dependencies with `pip3 install requirements.txt`
 - Right click `app.py`
 - Select `open with`
 - Select `python 3`
+
+### API Documentation
+API Documentations is on [DOCS.md](DOCS.md)

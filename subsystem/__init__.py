@@ -1,41 +1,38 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_restful import Resource, Api, reqparse
+from flask_restful import Resource, Api
 from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
-from subsystem.data_model import Asset, Plan, Report, User, Crisis
-from subsystem.config import SECRET_KEY
-from werkzeug.security import check_password_hash, generate_password_hash
-from subsystem.database_interface import get_asset, get_plan, get_report, \
-    get_users, get_crisis, add_users, DATABASE_ENV, DATABASE_UP
-if DATABASE_ENV and DATABASE_UP:
-    asset_data = Asset(get_asset())
-    plan_data = Plan(get_plan())
-    report_data = Report(get_report())
-    crisis_data = Crisis(get_crisis())
-    user_data = dict()
-    for _ in get_users():
-        user_data[_[0]] = _[1]
-else:
-    asset_data = Asset([])
-    plan_data = Plan([])
-    report_data = Report([])
-    crisis_data = Crisis([])
-    user_data = dict()
-    print("Issue in Database\nUsing Empty Data")
+from subsystem.data_model import db, Asset, Plan, Report, User
+from subsystem.config import SECRET_KEY, POSTGRES_URI
+from werkzeug.security import generate_password_hash
+from sqlalchemy.exc import DataError
+from uuid import uuid4
+
 app = Flask(__name__)
 api = Api(app)
+app.secret_key = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-app.secret_key = SECRET_KEY
 
 
-# User Handler
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    return app
+
+
+########################
+#     Login/Signup     #
+########################
 @login_manager.user_loader
-def load_user(user):
-    if user in user_data:
-        return User(user)
-    else:
-        return None
+def load_user(user_id):
+    print(User.query.filter_by(username=user_id).first())
+    return User.query.filter_by(username=user_id).first()
 
 
 @login_manager.unauthorized_handler
@@ -43,39 +40,38 @@ def unauthorized():
     return redirect(url_for('login'))
 
 
-# Login/Signup Function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     error = "false"
     if request.method == 'POST':
         uid = request.form.get('username')
         pwd = request.form.get('password')
-        user = User(uid)
-        if uid in user_data:
-            if check_password_hash(user_data[uid], pwd):
-                user.set_authenticated(True)
-                if login_user(user):
-                    return redirect(url_for('index'))
-            else:
-                error = "true"
-        else:
+        user = User.query.filter_by(username=uid).first()
+        if user is None or not user.check_password(pwd):
             error = "true"
+        else:
+            login_user(user, remember=True)
+            return redirect(url_for('index'))
     return render_template('login.html', error=error)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    error = None
+    error = "false"
     if request.method == 'POST':
         uid = request.form.get('username')
         pwd = request.form.get('password')
         pwd_hashed = generate_password_hash(pwd)
         del pwd
-        add_status = add_users(uid, pwd_hashed, 'user')
-        if add_status == 1:
-            error = "Username already taken"
+        if User.query.filter_by(username=uid).first():
+            error = "true"
         else:
-            user_data[uid] = pwd_hashed
+            newUser = User(
+                username=uid, pwd_hash=pwd_hashed, api_token=str(uuid4()))
+            db.session.add(newUser)
+            db.session.commit()
             return redirect(url_for('login'))
     return render_template('signup.html', error=error)
 
@@ -87,15 +83,18 @@ def logout():
     return redirect(url_for('login'))
 
 
-# Dashboard Website
+####################
+#     Webpages     #
+####################
 @app.route('/')
 @login_required
 def index():
-    global asset_data, plan_data, report_data
     return (render_template('index.html', user=current_user.username))
 
 
-# Error Handler
+#########################
+#     Error Handler     #
+#########################
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('error404'))
@@ -107,75 +106,87 @@ def error404():
     return (render_template('404.html', user=current_user.username))
 
 
-# API
-parser = reqparse.RequestParser()
-parser.add_argument('plan_id')
-parser.add_argument('crisis_id')
-parser.add_argument('report_id')
-parser.add_argument('asset_id')
-parser.add_argument('details')
-parser.add_argument('description')
-parser.add_argument('type')
-parser.add_argument('time')
-
-
+###############
+#     API     #
+###############
 class asset_api(Resource):
     def get(self):
-        return asset_data.json
+        return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
+
+    def post(self):
+        try:
+            newAsset = Asset(
+                name=request.form['name'],
+                availability=request.form['availability'])
+            db.session.add(newAsset)
+            db.session.commit()
+            return {
+                newAsset.id: {
+                    "name": newAsset.name,
+                    "availability": newAsset.availability
+                }
+            }
+        except KeyError:
+            return "Not Enough data", 400
+        except DataError:
+            return "Wrong Type of Data", 400
 
 
 class report_api(Resource):
     def get(self):
-        return report_data.json
+        return [a.convert() for a in Report.query.all()]
 
-    def put(self):
-        args = parser.parse_args()
+    def post(self):
+        # TODO: Add change in asset here
         try:
-            return args
+            newReport = Report(
+                crisis_id=request.form['crisis_id'],
+                assets_used=request.form['assets_used'],
+                casualty=request.form['casualty'],
+                details=request.form['details'],
+                time=request.form['time'])
+            db.session.add(newReport)
+            db.session.commit()
+            return {
+                newReport.id: {
+                    "crisis_id": newReport.crisis_id,
+                    "assets_used": newReport.assets_used_parsed,
+                    "casualty": newReport.casualty_parsed,
+                    "details": newReport.details,
+                    "time": str(newReport.time)
+                }
+            }
         except KeyError:
-            return 400, "Wrong Report Data"
+            return "Not Enough Data", 400
+        except DataError:
+            return "Wrong Type of Data", 400
 
 
 class plan_api(Resource):
     def get(self):
-        return plan_data.json
+        return [a.convert() for a in Plan.query.all()]
 
-    def put(self):
-        args = parser.parse_args()
+    def post(self):
         try:
-            plan_data.addPlan(args['plan_id'], {
-                "crisis_id": args['crisis_id'],
-                "details": args['details'],
-                "time": args['time']
-            })
-            return 200
+            newPlan = Plan(
+                crisis_id=request.form['crisis_id'],
+                details=request.form['details'],
+                time=request.form['time'])
+            db.session.add(newPlan)
+            db.session.commit()
+            return {
+                newPlan.id: {
+                    "crisis_id": newPlan.crisis_id,
+                    "details": newPlan.details,
+                    "time": str(newPlan.time)
+                }
+            }
         except KeyError:
-            return 400, "Wrong Plan Data"
-
-
-class crisis_api(Resource):
-    def get(self):
-        return crisis_data.json
-
-    def put(self):
-        args = parser.parse_args()
-        try:
-            crisis_data.addCrisis(args['crisis_id'], {
-                "type": args['type'],
-                "description": args['description'],
-                "time": args['time']
-            })
-            plan_data.addPlan(args['plan_id'], {
-                "crisis_id": args['crisis_id'],
-                "details": args['details'],
-                "time": args['time']
-            })
-            return 200
-        except KeyError:
-            return 400, "Wrong Crisis Data"
+            return "Not Enough data", 400
+        except DataError:
+            return "Wrong Type of Data", 400
 
 
 api.add_resource(asset_api, '/api/asset')
 api.add_resource(report_api, '/api/report')
 api.add_resource(plan_api, '/api/plan')
-api.add_resource(crisis_api, '/api/crisis')
