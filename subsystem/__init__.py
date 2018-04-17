@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
