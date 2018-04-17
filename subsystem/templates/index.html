@@ -153,10 +153,9 @@
 
         <div class="row">
           <div class="col-md-12">
-            <!-- AREA CHART -->
             <div class="box box-primary">
               <div class="box-header with-border">
-                <h3 class="box-title">Area Chart</h3>
+                <h3 class="box-title">Asset's Availability</h3>
   
                 <div class="box-tools pull-right">
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -173,10 +172,9 @@
             <!-- /.box -->
           </div>
           <div class="col-md-6">
-            <!-- AREA CHART -->
             <div class="box box-success">
               <div class="box-header with-border">
-                <h3 class="box-title">Area Chart</h3>
+                <h3 class="box-title">Report List</h3>
   
                 <div class="box-tools pull-right">
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -186,19 +184,7 @@
               <div class="box-body">
                 <div class="chart">
                   <!-- <canvas id="areaChart" style="height:250px"></canvas> -->
-                  <div id="reportList">
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                      <div class="row">
-                        <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
-                            <h1>1</h1>
-                        </div>
-                        <div class="col-sm-9">
-                          <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                          <small class="text-muted">Donec id elit non mi porta.</small>
-                        </div>
-                      </div>
-                    </a>
-                    
+                  <div id="reportList">                    
                   </div>
                 </div>
               </div>
@@ -207,10 +193,9 @@
             <!-- /.box -->
           </div>
           <div class="col-md-6">
-            <!-- DONUT CHART -->
             <div class="box box-warning">
               <div class="box-header with-border">
-                <h3 class="box-title">Donut Chart</h3>
+                <h3 class="box-title">Plan List</h3>
   
                 <div class="box-tools pull-right">
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -220,17 +205,6 @@
               <div class="box-body">
                 <!-- <canvas id="pieChart" style="height:250px"></canvas> -->
                 <div id="planList">
-                  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                    <div class="row">
-                      <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
-                          <h1>1</h1>
-                      </div>
-                      <div class="col-sm-9">
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                      </div>
-                    </div>
-                  </a>
                 </div>
               </div>
               <!-- /.box-body -->
@@ -331,17 +305,9 @@
   immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
 </div>
-<!-- ./wrapper -->
-
-<!-- REQUIRED JS SCRIPTS -->
-
-<!-- jQuery 3 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<!-- AdminLTE App -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/js/adminlte.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script>
   var user="{{user}}";
@@ -350,30 +316,29 @@
           $(this).attr('src', "{{ url_for('static', filename='images/account_logo.jpg') }}");
       });
   });
-</script>
-<script>
+
   function addEntry(listId,dataList){
     for (var entry in dataList) {
       $( "#" + listId ).append(`
         <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="row">
             <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
-                <h1>`+entry.crisis_id+`</h1><p hidden>`+entry.crisis_id+`</p>
+                <h1>`+dataList[entry]['crisis_id']+`</h1><p hidden>`+dataList[entry]['crisis_id']+`</p>
             </div>
             <div class="col-sm-9">
-              <p class="mb-1">`+entry.details+`</p>
-              <small class="text-muted">`+entry.time+`</small>
+              <p class="mb-1">`+dataList[entry]['details']+`</p>
+              <small class="text-muted">`+dataList[entry]['time']+`</small>
             </div>
           </div>
         </a>
       `);
     }
-
   }
   
   var assetData;
   var reportData;
   var planData;
+
   const assetPromise = new Promise((resolve, reject) => {
     $.get("/api/asset", function(data, status){
       assetData = data
@@ -381,19 +346,20 @@
     }, "json");
   });
   const reportPromise = new Promise((resolve, reject) => {
-    $.get("/api/report", function(data, status){
+    $.getJSON("/api/report", function(data, status){
       reportData = data
       resolve("Success")
     }, "json");
   });
   const planPromise = new Promise((resolve, reject) => {
-    $.get("/api/plan", function(data, status){
+    $.getJSON("/api/plan", function(data, status){
       planData = data
       resolve("Success")
     }, "json");
   });
-  Promise.all([reportPromise, planPromise, reportPromise]).then(()=>{
-    /* Asset Chart */
+
+  /* Asset Chart */
+  assetPromise.then(()=>{
     var ctx = document.getElementById("assetChart").getContext('2d');
     var reportChart = new Chart(ctx, {
         type: 'bar',
@@ -431,12 +397,17 @@
             }
         }
     });
-    /* Report Chart */
-    var reportBox = document.getElementById("reportList")
-
-
-    /* Plan Chart */
+  });
+  /* Report Chart */
+  reportPromise.then(() => {
+    addEntry('reportList', reportData)
   })
+
+  /* Plan Chart */
+  planPromise.then(() => {
+    addEntry('planList', planData)
+  })
+
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

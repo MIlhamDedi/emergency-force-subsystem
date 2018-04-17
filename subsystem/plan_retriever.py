@@ -10,8 +10,6 @@ def get_plan():
         try:
             r1 = requests.get('https://bigbigcmo.herokuapp.com/api/ef/')
             plan_list = r1.json()
-            with open('workfile', 'a') as f:
-                print(str(LAST_CHECK) + ": " + str(plan_list), file=f)
             for _ in plan_list:
                 plan_time = datetime.strptime(_['date_time_of_send'],
                                               "%Y-%m-%d %H:%M:%S")
