@@ -8,10 +8,10 @@
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon/favicon.ico') }}">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.0.0-18/css/ionicons.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/AdminLTE.min.css">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/skin-blue.min.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.0.0-18/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/skin-blue.min.css">
+  
  <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -187,35 +187,18 @@
                 <div class="chart">
                   <!-- <canvas id="areaChart" style="height:250px"></canvas> -->
                   <div id="reportList">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th scope="col">id</th>
-                          <th scope="col">First</th>
-                          <th scope="col">Last</th>
-                          <th scope="col">Handle</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr class="table-success">
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td colspan="2">Larry the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                      <div class="row">
+                        <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
+                            <h1>1</h1>
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                          <small class="text-muted">Donec id elit non mi porta.</small>
+                        </div>
+                      </div>
+                    </a>
+                    
                   </div>
                 </div>
               </div>
@@ -235,7 +218,20 @@
                 </div>
               </div>
               <div class="box-body">
-                <canvas id="pieChart" style="height:250px"></canvas>
+                <!-- <canvas id="pieChart" style="height:250px"></canvas> -->
+                <div id="planList">
+                  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="row">
+                      <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
+                          <h1>1</h1>
+                      </div>
+                      <div class="col-sm-9">
+                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                        <small class="text-muted">Donec id elit non mi porta.</small>
+                      </div>
+                    </div>
+                  </a>
+                </div>
               </div>
               <!-- /.box-body -->
             </div>
@@ -356,72 +352,91 @@
   });
 </script>
 <script>
-var assetData;
-var reportData;
-var planData;
-const assetPromise = new Promise((resolve, reject) => {
-  $.get("/api/asset", function(data, status){
-    assetData = data
-    resolve("Success")
-  }, "json");
-});
-const reportPromise = new Promise((resolve, reject) => {
-  $.get("/api/report", function(data, status){
-    reportData = data
-    resolve("Success")
-  }, "json");
-});
-const planPromise = new Promise((resolve, reject) => {
-  $.get("/api/plan", function(data, status){
-    planData = data
-    resolve("Success")
-  }, "json");
-});
-Promise.all([reportPromise, planPromise, reportPromise]).then(()=>{
-  /* Asset Chart */
-  var ctx = document.getElementById("assetChart").getContext('2d');
-  var reportChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-          labels: Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[0]),
-          datasets: [{
-              label: 'Availability',
-              data: Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[1]),
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                  }
-              }]
-          }
-      }
+  function addEntry(listId,dataList){
+    for (var entry in dataList) {
+      $( "#" + listId ).append(`
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="row">
+            <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
+                <h1>`+entry.crisis_id+`</h1><p hidden>`+entry.crisis_id+`</p>
+            </div>
+            <div class="col-sm-9">
+              <p class="mb-1">`+entry.details+`</p>
+              <small class="text-muted">`+entry.time+`</small>
+            </div>
+          </div>
+        </a>
+      `);
+    }
+
+  }
+  
+  var assetData;
+  var reportData;
+  var planData;
+  const assetPromise = new Promise((resolve, reject) => {
+    $.get("/api/asset", function(data, status){
+      assetData = data
+      resolve("Success")
+    }, "json");
   });
-  /* Report Chart */
-  var reportBox = document.getElementById("reportList")
+  const reportPromise = new Promise((resolve, reject) => {
+    $.get("/api/report", function(data, status){
+      reportData = data
+      resolve("Success")
+    }, "json");
+  });
+  const planPromise = new Promise((resolve, reject) => {
+    $.get("/api/plan", function(data, status){
+      planData = data
+      resolve("Success")
+    }, "json");
+  });
+  Promise.all([reportPromise, planPromise, reportPromise]).then(()=>{
+    /* Asset Chart */
+    var ctx = document.getElementById("assetChart").getContext('2d');
+    var reportChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[0]),
+            datasets: [{
+                label: 'Availability',
+                data: Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[1]),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
+    /* Report Chart */
+    var reportBox = document.getElementById("reportList")
 
 
-  /* Plan Chart */
-})
+    /* Plan Chart */
+  })
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
