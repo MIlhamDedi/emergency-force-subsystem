@@ -130,9 +130,28 @@ class asset_api(Resource):
                 }
             }
         except KeyError:
-            return "Not Enough data", 400
+            return {'error': "Not Enough Data"}, 400
         except DataError:
-            return "Wrong Type of Data", 400
+            return {'error': "Wrong Type of Data"}, 400
+
+
+@api.route('/api/asset/<int:asset_id>')
+class asset_update_api(Resource):
+    def get(self, asset_id):
+        asset_data = Asset.query.filter_by(id=asset_id).first()
+        a = asset_data.convert()
+        return {a[0]: a[1]}
+
+    def post(self, asset_id):
+        try:
+            a = Asset.query.filter_by(id=asset_id).first()
+            a.availability = request.form['availability']
+            db.session.commit()
+            return {'error': ""}, 200
+        except KeyError:
+            return {'error': "Not Enough Data"}, 400
+        except DataError:
+            return {'error': "Wrong Type of Data"}, 400
 
 
 @api.route('/api/report')
@@ -141,7 +160,6 @@ class report_api(Resource):
         return [a.convert() for a in Report.query.all()]
 
     def post(self):
-        # TODO: Add change in asset here
         try:
             newReport = Report(
                 crisis_id=request.form['crisis_id'],
@@ -161,9 +179,9 @@ class report_api(Resource):
                 }
             }
         except KeyError:
-            return "Not Enough Data", 400
+            return {'error': "Not Enough Data"}, 400
         except DataError:
-            return "Wrong Type of Data", 400
+            return {'error': "Wrong Type of Data"}, 400
 
 
 @api.route('/api/plan')
@@ -187,6 +205,27 @@ class plan_api(Resource):
                 }
             }
         except KeyError:
-            return "Not Enough data", 400
+            return {'error': "Not Enough Data"}, 400
         except DataError:
-            return "Wrong Type of Data", 400
+            return {'error': "Wrong Type of Data"}, 400
+
+
+@api.route('/api/plan/<int:plan_id>')
+class plan_update_api(Resource):
+    def get(self, plan_id):
+        plan_data = Plan.query.filter_by(id=plan_id).first()
+        return plan_data.convert()
+
+    def post(self, plan_id):
+        try:
+            plan_data = Plan.query.filter_by(id=plan_id).first()
+            plan_data.progress = int(request.form['progress'])
+            db.session.commit()
+            return {
+                'error': "",
+                'plan': plan_data.convert()
+            }, 200
+        except KeyError:
+            return {'error': "Not Enough Data"}, 400
+        except (DataError, ValueError):
+            return {'error': "Wrong Type of Data"}, 400
