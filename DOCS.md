@@ -10,7 +10,7 @@
 
 ### Asset
 
-```json
+```
 {
     asset.id -> (int): {
         "name": asset.name -> (str),
@@ -21,7 +21,7 @@
 ```
 ### Plan
 
-```json
+```
 [
     {
         "id": plan.id -> (int),
@@ -34,7 +34,7 @@
 ```
 ### Report
 
-```json
+```
 [
     {
         "report_id": report.id -> (int),
@@ -51,4 +51,5 @@
 > **NOTES**
 >
 > casualty will be an empty string when there's no casualty
+>
 > Asset_used and casualty is a cumulative value for one crisis
