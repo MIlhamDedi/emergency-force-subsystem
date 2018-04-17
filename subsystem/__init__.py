@@ -9,7 +9,6 @@ from sqlalchemy.exc import DataError
 from uuid import uuid4
 
 app = Flask(__name__)
-api = Api(app, doc='/api/')
 app.secret_key = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -108,6 +107,9 @@ def error404():
 ###############
 #     API     #
 ###############
+api = Api(app, doc='/api/')
+
+
 @api.route('/api/asset')
 class asset_api(Resource):
     def get(self):
