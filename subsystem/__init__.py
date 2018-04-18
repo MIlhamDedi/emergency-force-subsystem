@@ -5,7 +5,7 @@ from flask_login import LoginManager, login_user, logout_user,\
 from subsystem.data_model import db, Asset, Plan, Report, User
 from subsystem.config import SECRET_KEY, POSTGRES_URI
 from werkzeug.security import generate_password_hash
-from sqlalchemy.exc import DataError
+from sqlalchemy.exc import DataError, IntegrityError
 from uuid import uuid4
 
 app = Flask(__name__)
@@ -124,15 +124,19 @@ class asset_api(Resource):
             db.session.add(newAsset)
             db.session.commit()
             return {
-                newAsset.id: {
-                    "name": newAsset.name,
-                    "availability": newAsset.availability
+                'error': "",
+                'asset': {
+                    'id': newAsset.id,
+                    'name': newAsset.name,
+                    'availability': newAsset.availability
                 }
-            }
+            }, 201
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except DataError:
             return {'error': "Wrong Type of Data"}, 400
+        except IntegrityError:
+            return {'error': "Asset with such name already exist"}, 403
 
 
 @api.route('/api/asset/<int:asset_id>')
@@ -169,7 +173,7 @@ class report_api(Resource):
                 time=request.form['time'])
             db.session.add(newReport)
             db.session.commit()
-            return newReport.convert()
+            return {'error': '', 'report': newReport.convert()}, 201
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except DataError:
@@ -184,16 +188,19 @@ class plan_api(Resource):
     def post(self):
         try:
             newPlan = Plan(
+                id=request.form['id'],
                 crisis_id=request.form['crisis_id'],
                 details=request.form['details'],
                 time=request.form['time'])
             db.session.add(newPlan)
             db.session.commit()
-            return newPlan.convert()
+            return {'error': "", 'plan': newPlan.convert()}, 201
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except DataError:
             return {'error': "Wrong Type of Data"}, 400
+        except IntegrityError:
+            return {'error': "Duplicate value of Data"}, 403
 
 
 @api.route('/api/plan/<int:plan_id>')
@@ -207,11 +214,10 @@ class plan_update_api(Resource):
             plan_data = Plan.query.filter_by(id=plan_id).first()
             plan_data.progress = int(request.form['progress'])
             db.session.commit()
-            return {
-                'error': "",
-                'plan': plan_data.convert()
-            }, 200
+            return {'error': "", 'plan': plan_data.convert()}, 200
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except (DataError, ValueError):
             return {'error': "Wrong Type of Data"}, 400
+        except IntegrityError:
+            return {'error': "Plan doesn't exist"}, 400
