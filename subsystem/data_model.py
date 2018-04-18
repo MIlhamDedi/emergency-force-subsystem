@@ -43,7 +43,7 @@ class Plan(db.Model):
     crisis_id = db.Column(db.Integer)
     details = db.Column(db.String)
     time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-    progress = db.Column(db.Integer, nullable=False, default=1)
+    progress = db.Column(db.Integer, nullable=False, default=-1)
 
     def __repr__(self):
         return f'<Plan {self.id}){self.details}>'
