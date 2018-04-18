@@ -114,7 +114,11 @@ api = Api(app, doc='/api/')
 @api.route('/api/asset')
 class asset_api(Resource):
     def get(self):
-        return {a: b for (a, b) in (i.convert() for i in Asset.query.all())}
+        return {
+            a: b
+            for (a, b) in (i.convert()
+                           for i in Asset.query.order_by(Asset.id).all())
+        }
 
     def post(self):
         try:
@@ -161,7 +165,9 @@ class asset_update_api(Resource):
 @api.route('/api/report')
 class report_api(Resource):
     def get(self):
-        return [a.convert() for a in Report.query.all()]
+        return [
+            a.convert() for a in Report.query.order_by(Report.id.desc()).all()
+        ]
 
     def post(self):
         try:
@@ -183,7 +189,7 @@ class report_api(Resource):
 @api.route('/api/plan')
 class plan_api(Resource):
     def get(self):
-        return [a.convert() for a in Plan.query.all()]
+        return [a.convert() for a in Plan.query.order_by(Plan.id.desc()).all()]
 
     def post(self):
         try:
