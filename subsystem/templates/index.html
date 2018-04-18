@@ -357,8 +357,8 @@
       })
   }
 
-  function deployAsset(asset_id, add){
-    $.post( "/api/asset/" + asset_id, {'add': add})
+  function deployAsset(asset_id, number){
+    $.post( "/api/asset/" + asset_id, {'number': number})
       .done(function() {
         alert('done')
       })
@@ -370,9 +370,13 @@
 
   function addEntry(listId,dataList){
     for (var entry in dataList) {
+      bgcolor = ""
+      if (dataList[entry]['progress'] == -1){
+        bgcolor ="background-color: red;"
+      }
       $( "#" + listId ).append(`
         <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-          <div class="row">
+          <div class="row" style='`+ bgcolor  + `'>
             <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
                 <h1>`+dataList[entry]['crisis_id']+`</h1><p hidden>`+dataList[entry]['crisis_id']+`</p>
             </div>

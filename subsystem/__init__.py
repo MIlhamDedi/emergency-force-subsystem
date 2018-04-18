@@ -145,7 +145,7 @@ class asset_update_api(Resource):
     def post(self, asset_id):
         try:
             a = Asset.query.filter_by(id=asset_id).first()
-            a.availability += int(request.form['add'])
+            a.availability -= int(request.form['number'])
             db.session.commit()
             return {'error': ""}, 200
         except KeyError:
