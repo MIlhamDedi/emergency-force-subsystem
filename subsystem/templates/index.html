@@ -466,7 +466,18 @@
       closeLabel: "Close",
       cssClass: [],
       onOpen: function() {},
-      onClose: function() {},
+      onClose: function() {
+        $( "#" + "assetGroup" ).replaceWith(`
+          <label for="assetGroup">Assets Used</label>
+          <button type="button" class="btn btn-box-tool" id="addButton" onclick="addAssetInput();reportModal.checkOverflow();"><i class="fa fa-plus-circle"></i>
+          </button>
+        `)
+        $( "#" + "casualtyGroup" ).replaceWith(`
+          <label for="casualtyGroup">Casualty</label>
+          <button type="button" class="btn btn-box-tool" id="addButton2" onclick="addCasualtyInput();reportModal.checkOverflow();"><i class="fa fa-plus-circle"></i>
+          </button>
+        `)
+      },
       beforeClose: function() {
           return true; // close the modal
           // return false; // in case to cancel closing the modal
@@ -481,54 +492,14 @@
 
         <div class="form-group" id="assetGroup">
           <label for="assetGroup">Assets Used</label>
-          <button type="button" class="btn btn-primary mb-2" id="addButton" onClick="addAssetInput();reportModal.checkOverflow();">+</button>
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group">       
-                  <select class="form-control" id="assetForm">
-                    <option>Garlic Ninja</option>
-                    <option>Silver Knights</option>
-                    <option>Priests</option>
-                    <option>Bomb Disposal</option>
-                    <option>Military</option>
-                    <option>Search and Rescue</option>
-                    <option>Ambulance</option>
-                    <option>HAZAMAT</option>
-                    <option>Firefighter</option>
-                    <option>Infectious Disease Quarantine</option>
-                  </select>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <input type="number" class="form-control" id="assetNumber" placeholder="Number">
-            </div>
-          </div>
+          <button type="button" class="btn btn-box-tool" id="addButton" onclick="addAssetInput();reportModal.checkOverflow();"><i class="fa fa-plus-circle"></i>
+          </button>
         </div>
       
         <div class="form-group" id="casualtyGroup">
           <label for="casualtyGroup">Casualty</label>
-          <button type="button" class="btn btn-primary mb-2" id="addButton2" onClick="addCasualtyInput()">+</button>
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group">       
-                  <select class="form-control" id="casualtyForm">
-                    <option>Garlic Ninja</option>
-                    <option>Silver Knights</option>
-                    <option>Priests</option>
-                    <option>Bomb Disposal</option>
-                    <option>Military</option>
-                    <option>Search and Rescue</option>
-                    <option>Ambulance</option>
-                    <option>HAZAMAT</option>
-                    <option>Firefighter</option>
-                    <option>Infectious Disease Quarantine</option>
-                  </select>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <input type="number" class="form-control" id="casualtyNumber" placeholder="Number">
-            </div>
-          </div>
+          <button type="button" class="btn btn-box-tool" id="addButton2" onclick="addCasualtyInput();reportModal.checkOverflow();"><i class="fa fa-plus-circle"></i>
+          </button>
         </div>
 
         <div class="form-group">
@@ -553,7 +524,7 @@
       D = D.toISOString();
       D = D.slice(0,9) + ' ' + D.slice(11,19)
       console.log(D)
-      addReport(param[0], param[1], param[2], param[3], D, param[5])
+      // addReport(param[0], param[1], param[2], param[3], D, param[5])
       reportModal.close();
     });
     reportModal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--pull-right tingle-btn--danger', function() {
