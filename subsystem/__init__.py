@@ -153,13 +153,13 @@ class asset_update_api(Resource):
     def post(self, asset_id):
         try:
             a = Asset.query.filter_by(id=asset_id).first()
-            a.availability -= int(request.form['number'])
+            a.availability -= int(request.form['add'])
             db.session.commit()
             return {'error': ""}, 200
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except (DataError, ValueError, TypeError):
-            return {'error': "Wrong Type of Data"}, 400
+            return {'error': "Wrong Type of Data"}, 403
 
 
 @api.route('/api/report')
@@ -171,11 +171,14 @@ class report_api(Resource):
 
     def post(self):
         try:
+            is_final_data = True if request.form[
+                'is_final'].lower() == "true" else False
             newReport = Report(
                 crisis_id=request.form['crisis_id'],
                 assets_used=request.form['assets_used'],
                 casualty=request.form['casualty'],
                 details=request.form['details'],
+                is_final=is_final_data,
                 time=request.form['time'])
             db.session.add(newReport)
             db.session.commit()
