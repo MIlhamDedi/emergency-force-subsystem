@@ -145,12 +145,12 @@ class asset_update_api(Resource):
     def post(self, asset_id):
         try:
             a = Asset.query.filter_by(id=asset_id).first()
-            a.availability = request.form['availability']
+            a.availability += request.form['add']
             db.session.commit()
             return {'error': ""}, 200
         except KeyError:
             return {'error': "Not Enough Data"}, 400
-        except DataError:
+        except (DataError, ValueError, TypeError):
             return {'error': "Wrong Type of Data"}, 400
 
 
@@ -169,15 +169,7 @@ class report_api(Resource):
                 time=request.form['time'])
             db.session.add(newReport)
             db.session.commit()
-            return {
-                newReport.id: {
-                    "crisis_id": newReport.crisis_id,
-                    "assets_used": newReport.assets_used_parsed,
-                    "casualty": newReport.casualty_parsed,
-                    "details": newReport.details,
-                    "time": str(newReport.time)
-                }
-            }
+            return newReport.convert()
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except DataError:
@@ -197,13 +189,7 @@ class plan_api(Resource):
                 time=request.form['time'])
             db.session.add(newPlan)
             db.session.commit()
-            return {
-                newPlan.id: {
-                    "crisis_id": newPlan.crisis_id,
-                    "details": newPlan.details,
-                    "time": str(newPlan.time)
-                }
-            }
+            return newPlan.convert()
         except KeyError:
             return {'error': "Not Enough Data"}, 400
         except DataError:

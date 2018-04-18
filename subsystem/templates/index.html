@@ -316,8 +316,26 @@
           $(this).attr('src', "{{ url_for('static', filename='images/account_logo.jpg') }}");
       });
   });
-  function addReport(crisis_id, assets_used, casualty, details, time){
-    $.post( "/api/report", {'crisis_id': crisis_id, 'assets_used': assets_used, 'casualty': casualty, 'details': details, 'time': time})
+  function addReport(crisis_id, assets_used, casualty, details, time, is_final){
+    $.post( "/api/report", {'crisis_id': crisis_id, 'assets_used': assets_used, 'casualty': casualty, 'details': details, 'time': time, 'is_final': is_final})
+      .done(function(data) {
+        for (asset_id in data['assets_used']) {
+          for (a_id2 in data['casualty']) {
+            if (data['casualty'][a_id2][0] == data['assets_used'][asset_id][0]){
+              data['assets_used'][asset_id][1] -= data['casualty'][a_id2][1];
+              break;
+            }
+          }
+          $.post( "/api/asset/" + str(asset_id), {'add': data['assets_used'][asset_id][1]})
+        }
+      }, "json")
+      .fail(function() {
+        alert('fail')
+      })
+  }
+
+  function updatePlan(plan_id, progress){
+    $.post( "/api/plan/" + str(plan_id), {'progress': progress})
       .done(function() {
         alert('done')
       })
@@ -326,8 +344,8 @@
       })
   }
 
-  function updatePlan(plan_id, progress){
-    $.post( "/api/plan/" + str(plan_id), {'progress': progress})
+  function deployAsset(asset_id, add){
+    $.post( "/api/asset/" + str(asset_id), {'add': add})
       .done(function() {
         alert('done')
       })
