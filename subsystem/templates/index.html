@@ -178,7 +178,7 @@
                 <h3 class="box-title">Report List</h3>
   
                 <div class="box-tools pull-right">
-                  <button type="button" class="btn btn-box-tool" onclick="showModal();"><i class="fa fa-pencil"></i>
+                  <button type="button" class="btn btn-box-tool" onclick="showModal('report');"><i class="fa fa-pencil"></i>
                   </button>
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                   </button>
@@ -249,7 +249,7 @@
               <i class="menu-icon fa fa-birthday-cake bg-red"></i>
 
               <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                <h4 class="control-sidebar-subheading">Prime Minister's Birthday</h4>
 
                 <p>Will be 23 on April 24th</p>
               </div>
@@ -377,7 +377,7 @@
         bgcolor ="background-color: red;"
       }
       $( "#" + listId ).append(`
-        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <a onclick="showModal('plan');" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="row" style='`+ bgcolor  + `'>
             <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
                 <h1>`+dataList[entry]['crisis_id']+`</h1><p hidden>`+dataList[entry]['crisis_id']+`</p>
@@ -468,7 +468,7 @@
 </script>
 <script>
   // instanciate new modal
-var modal = new tingle.modal({
+var reportModal = new tingle.modal({
     footer: true,
     stickyFooter: false,
     closeMethods: ['overlay', 'button', 'escape'],
@@ -486,7 +486,7 @@ var modal = new tingle.modal({
     }
 });
 // set content
-modal.setContent(`<form id="report-form">
+reportModal.setContent(`<form id="report-form">
   <div class="form-group">
     <label for="exampleInputEmail1">Email address</label>
     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -503,7 +503,7 @@ modal.setContent(`<form id="report-form">
 </form>`);
 
 // add a button
-modal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
+reportModal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
   var param = [];
   $("form#report-form :input").each(function(){
     param.push($(this)[0]['value']);
@@ -514,16 +514,79 @@ modal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() 
   D = D.toISOString();
   D = D.slice(0,9) + ' ' + D.slice(11,19)
   console.log(D)
-//  addReport(param[0], param[1], param[2], param[3], D, param[5])
-  modal.close();
+  addReport(param[0], param[1], param[2], param[3], D, param[5])
+reportModal.close();
 });
 
 // add another button
-modal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
-  modal.close();
+reportModal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
+  reportModal.close();
 });
-function showModal(){
-  modal.open()
+
+
+var planModal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Close",
+    cssClass: ['custom-class-1', 'custom-class-2'],
+    onOpen: function() {
+    },
+    onClose: function() {
+    },
+    beforeClose: function() {
+        // here's goes some logic
+        // e.g. save content before closing the modal
+        return true; // close the modal
+        return false; // nothing happens
+    }
+});
+// set content
+planModal.setContent(`<form id="plan-form">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+  </div>
+</form>`);
+
+// add a button
+planModal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
+  var param = [];
+  $("form#plan-form :input").each(function(){
+    param.push($(this)[0]['value']);
+    console.log($(this));
+  });
+  console.log(param)
+  var D = new Date();
+  D = D.toISOString();
+  D = D.slice(0,9) + ' ' + D.slice(11,19)
+  console.log(D)
+//  addReport(param[0], param[1], param[2], param[3], D, param[5])
+planModal.close();
+});
+
+// add another button
+planModal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
+  planModal.close();
+});
+
+
+function showModal(param){
+  if(param == 'report'){
+    reportModal.open()
+  } else{
+    planModal.open()
+  }
+  
 }
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
