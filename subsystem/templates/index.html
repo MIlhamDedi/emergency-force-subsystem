@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.0.0-18/css/ionicons.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/AdminLTE.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.13.2/tingle.min.css" />
   
  <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -177,7 +178,7 @@
                 <h3 class="box-title">Report List</h3>
   
                 <div class="box-tools pull-right">
-                  <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil"></i>
+                  <button type="button" class="btn btn-box-tool" onclick="showModal();"><i class="fa fa-pencil"></i>
                   </button>
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                   </button>
@@ -311,6 +312,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/js/adminlte.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.13.2/tingle.min.js"></script>
 <script>
   var user="{{user}}";
   $(document).ready(function () {
@@ -463,6 +465,45 @@
     addEntry('planList', planData)
   })
 
+</script>
+<script>
+  // instanciate new modal
+var modal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Close",
+    cssClass: ['custom-class-1', 'custom-class-2'],
+    onOpen: function() {
+        console.log('modal open');
+    },
+    onClose: function() {
+        console.log('modal closed');
+    },
+    beforeClose: function() {
+        // here's goes some logic
+        // e.g. save content before closing the modal
+        return true; // close the modal
+        return false; // nothing happens
+    }
+});
+// set content
+modal.setContent('<h1>here\'s some content</h1>');
+
+// add a button
+modal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
+    // here goes some logic
+    modal.close();
+});
+
+// add another button
+modal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
+    // here goes some logic
+    modal.close();
+});
+function showModal(){
+  modal.open()
+}
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
