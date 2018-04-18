@@ -365,17 +365,19 @@
 
     function addEntry(listId,dataList){
       for (var entry in dataList) {
+        onClickFunction = ""
         bgcolor = ""
         if (dataList[entry]['progress'] == -1){
-          bgcolor ="background-color: red;"
+          bgcolor ="background-color: #f39c12;"
         }
+        if (listId == 'planList') {onClickFunction=`onclick="showModal('plan');"`}
         $( "#" + listId ).append(`
-          <a onclick="showModal('plan');" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-            <div class="row" style='`+ bgcolor  + `'>
+          <a ` + onClickFunction + ` href="#" class="list-group-item list-group-item-action flex-column align-items-start" style='`+ bgcolor  + `'>
+            <div class="row">
               <div class="col-sm-3" style="text-align: center; align-items: center; vertical-align: 100%">
                   <h1>`+dataList[entry]['crisis_id']+`</h1><p hidden>`+dataList[entry]['crisis_id']+`</p>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-9" style="overflow: auto">
                 <p class="mb-1">`+dataList[entry]['details']+`</p>
                 <small class="text-muted">`+dataList[entry]['time']+`</small>
               </div>
