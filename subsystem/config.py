@@ -11,7 +11,7 @@ except KeyError:
 
 # BASE URL for the server
 try:
-    BASE_URL = os.environ['BASE_URL']
+    BASE_URL = os.environ['BASE_URI']
 except KeyError:
     BASE_URL = 'http://localhost:5000'
 
