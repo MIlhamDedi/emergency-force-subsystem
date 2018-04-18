@@ -1,7 +1,6 @@
 import requests
-from datetime import datetime
 import time
-LAST_CHECK = datetime.now()
+solution_id_list = []
 
 
 def get_plan():
@@ -11,9 +10,7 @@ def get_plan():
             r1 = requests.get('https://bigbigcmo.herokuapp.com/api/ef/')
             plan_list = r1.json()
             for _ in plan_list:
-                plan_time = datetime.strptime(_['date_time_of_send'],
-                                              "%Y-%m-%d %H:%M:%S")
-                if plan_time > LAST_CHECK:
+                if _['solution_id'] not in solution_id_list:
                     r2 = requests.post(
                         'https://cz3003-ef.herokuapp.com/api/plan',
                         data={
@@ -21,9 +18,11 @@ def get_plan():
                             'details': _['detail'],
                             "time": _['date_time_of_send']
                         })
+                    solution_id_list.append(_['solution_id'])
                     if r2.status_code == 400:
-                        print(f"Wrong Plan Format on Plan from {plan_time}")
-            LAST_CHECK = datetime.now()
+                        print(
+                            f"Wrong Format on solution_id {_['solution_id']}"
+                        )
             time.sleep(20)
         except (KeyboardInterrupt, SystemExit):
             break
