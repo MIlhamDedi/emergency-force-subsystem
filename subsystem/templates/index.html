@@ -550,6 +550,9 @@
       time = time.toISOString();
       time = time.slice(0,9) + ' ' + time.slice(11,19)
       $.post( "/api/report", {'crisis_id': planData[planSelected]["crisis_id"], 'assets_used': assets_used, 'casualty': "", 'details': "Initial Report: " + assets_used, 'time': time, 'is_final': "false"})
+        .done(function( data ) {
+          window.location.reload();
+        })
       
     planModal.close();
     });
