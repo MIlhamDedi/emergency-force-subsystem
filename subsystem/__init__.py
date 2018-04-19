@@ -230,23 +230,23 @@ class fetch_plan(Resource):
                     newPlan = Plan(
                         id=_['solution_id'],
                         crisis_id=_['crisis_id'],
-                        details=_['details'],
-                        time=_['time'])
+                        details=_['detail'],
+                        time=_['date_time_of_send'])
                     db.session.add(newPlan)
                     db.session.commit()
                     added_id.append(_['solution_id'])
                 except KeyError:
                     return {
-                        'error': "Not Enough Data on id _['solution_id']"
+                        'error': f"Not Enough Data on id {_['solution_id']}"
                     }, 400
                 except DataError:
                     return {
-                        'error': "Wrong Type of Data on id _['solution_id']"
+                        'error': f"Wrong Type of Data on id {_['solution_id']}"
                     }, 400
                 except IntegrityError:
                     return {
                         'error':
-                        "Duplicate value of Data on id _['solution_id']"
+                        f"Duplicate value of Data on id {_['solution_id']}"
                     }, 403
         return {'error': 'none', 'added_id': added_id}, 201
 
