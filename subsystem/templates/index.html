@@ -538,16 +538,18 @@
       $("form#plan-form :input").each(function(){
         param.push($(this)[0]['value']);
       });
+      let assets_used = "";
       for (i=0; i<(param.length-1); i++) {
         if (param[i] != 0){
           deployAsset(i+1, param[i]);
+          assets_used += param[i];
         }
       }
       updatePlan(planData[planSelected]["id"], 1);
       let time = new Date();
       time = time.toISOString();
       time = time.slice(0,9) + ' ' + time.slice(11,19)
-      $.post( "/api/report", {'crisis_id': planData[planSelected]["crisis_id"], 'assets_used': "(1,2)", 'casualty': "", 'details': "Initial Report", 'time': time, 'is_final': "false"})
+      $.post( "/api/report", {'crisis_id': planData[planSelected]["crisis_id"], 'assets_used': assets_used, 'casualty': "", 'details': "Initial Report: " + assets_used, 'time': time, 'is_final': "false"})
       
     planModal.close();
     });
