@@ -27,6 +27,7 @@ def get_plan():
                             f"Wrong Format on solution_id {_['solution_id']}"
                         )
                     if r2.status_code == 403:
+                        solution_id_list.append(_['solution_id'])
                         print(f"Plan with id {_['solution_id']} already exist")
             time.sleep(20)
         except (KeyboardInterrupt, SystemExit):
