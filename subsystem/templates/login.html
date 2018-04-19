@@ -28,10 +28,7 @@
     <!-- Google Font -->
     <style>
       .bg-image{
-        background-image: url(http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/pagePropertiesImage/singapore.jpg);
-        background-repeat:no-repeat;
-        background-size:inherit;
-        background-position:inherit;
+        background: url({{ url_for('static', filename='images/singapore.jpg') }}) fixed 50% / cover;
       }
       .shadow-lg{
         box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
