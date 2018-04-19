@@ -315,50 +315,46 @@
                 .done(function(){
                 })
                 .fail(function(data){
-                  console.log(data);
-                  console.log('fail in assets modification');
                   alert("fail");
-                  status = false;
+                  return false;
                 })
             }
           }
         }, "json")
         .fail(function(data) {
-          console.log(data);
           alert("Fail");
-          status = false;
+          return false;
         })
-      if (status === true) {alert("success")}
       return status;
     }
     function updatePlan(plan_id, progress){
       $.post( "/api/plan/" + plan_id, {'progress': progress})
         .done(function() {
-          alert('done')
         })
         .fail(function(data) {
-          console.log(data);
           alert('fail');
         })
     }
     function deployAsset(asset_id, number){
-      $.post( "/api/asset/" + asset_id, {'number': number})
+      $.post( "/api/asset/" + asset_id, {'add': number})
         .done(function() {
-          alert('done')
         })
         .fail(function(data) {
-          console.log(data);
           alert('fail');
         })
     }
     function addEntry(listId,dataList){
       for (var entry in dataList) {
-        onClickFunction = ""
-        bgcolor = ""
+        onClickFunction = "";
+        bgcolor = "";
+        indicator = "crisis_id";
         if (dataList[entry]['progress'] == -1){
-          bgcolor ="background-color: #f39c12;"
+          bgcolor ="background-color: #f39c12;";
         }
-        if (listId == 'planList') {onClickFunction=`onclick="showModal('plan');"`}
+        if (listId == 'planList') {
+          onClickFunction=`onclick="planSelected=`+entry+`; showModal('plan');"`;
+          indicator="id";
+        }
         $( "#" + listId ).append(`
           <a ` + onClickFunction + ` href="#" class="list-group-item list-group-item-action flex-column align-items-start" style='`+ bgcolor  + `'>
             <div class="row">
@@ -454,21 +450,13 @@
       closeLabel: "Close",
       cssClass: [],
       onOpen: function() {
-        addAssetInput();
-        addCasualtyInput();
+        addAssetInput("assetGroup");
+        addCasualtyInput("casualtyGroup");
         modalCheckOverflow('report');
       },
       onClose: function() {
-        $( "#" + "assetGroup" ).html(`
-          <label for="assetGroup">Assets Used</label>
-          <button type="button" class="btn btn-box-tool" id="addButton" onclick="addAssetInput();reportModal.checkOverflow();"><i class="fa fa-plus-circle"></i>
-          </button>
-        `)
-        $( "#" + "casualtyGroup" ).html(`
-          <label for="casualtyGroup">Casualty</label>
-          <button type="button" class="btn btn-box-tool" id="addButton2" onclick="addCasualtyInput();reportModal.checkOverflow();"><i class="fa fa-plus-circle"></i>
-          </button>
-        `)
+        $( "#" + "assetGroup" ).html('')
+        $( "#" + "casualtyGroup" ).html('')
       },
       beforeClose: function() {
           return true; // close the modal
@@ -476,18 +464,22 @@
       }
     });
     reportModal.setContent(`
-      <form id="report-form" action="javascript:alert( 'success!' );" style="align-items: flex-start;" onsubmit="return addReport()">
+      <form id="report-form" style="align-items: flex-start;" onsubmit="return addReport()">
         <div class="form-group">
           <label for="inputCrisisID">Crisis ID</label>
           <input type="number" class="form-control" id="inputCrisisID" placeholder="Enter crisis ID" min=0 required>
         </div>
 
-        <label for="assetGroup">Assets Used</label>
-        <div class="form-group panel panel-default" id="assetGroup" style="overflow-y:auto; max-height: 300px; overflow-x:hidden">
+        <label for="assetUsed">Assets Used</label>
+        <div class="form-group panel panel-default" id="assetUsed">
+          <div class="panel-body list-group" id="assetGroup" style="overflow-y:auto; max-height: 300px; overflow-x:hidden">
+          </div>
         </div>
 
-        <label for="assetGroup">Casualty</label>
-        <div class="form-group panel panel-default" id="casualtyGroup" style="overflow-y:auto; max-height: 300px; overflow-x:hidden">
+        <label for="casualtyPanel">Casualty</label>
+        <div class="form-group panel panel-default" id="casualtyPanel" style="overflow-y:auto; max-height: 300px; overflow-x:hidden">
+          <div class="panel-body list-group" id="casualtyGroup" style="overflow-y:auto; max-height: 300px; overflow-x:hidden">
+          </div>
         </div>
 
         <div class="form-group">
@@ -508,48 +500,56 @@
       reportModal.close();
     });
 
+    var planSelected = null;
     var planModal = new tingle.modal({
         footer: true,
         stickyFooter: true,
         closeMethods: ['overlay', 'button', 'escape'],
         closeLabel: "Close",
-        cssClass: ['custom-class-1', 'custom-class-2'],
-        onOpen: function() {},
-        onClose: function() {},
+        cssClass: [],
+        onOpen: function() {
+          addAssetInput("assetToDeploy");
+          modalCheckOverflow("plan");
+        },
+        onClose: function() {
+          $( "#" + "assetToDeploy" ).html('')
+        },
         beforeClose: function() {
           return true; // close the modal
           // return false; // to cancel closing
         }
     });
-    planModal.setContent(`<form id="plan-form">
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-      </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-      </div>
-    </form>`);
-    planModal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
+    planModal.setContent(`
+      <form id="plan-form">
+          <div class="form-group panel panel-default" id="assetUsed">
+            <div class="panel-heading">
+              <h3 class="panel-title">Asset to Deploy</h3>
+            </div>
+            <div class="panel-body list-group" id="assetToDeploy" >
+            </div>
+          </div>
+          <input type="submit" id="asset-deploy-button" class="hidden" />
+          </div>
+      </form>`);
+    planModal.addFooterBtn('Deploy', 'tingle-btn tingle-btn--pull-right tingle-btn--primary', function() {
       var param = [];
       $("form#plan-form :input").each(function(){
         param.push($(this)[0]['value']);
-        console.log($(this));
       });
-      console.log(param)
-      var D = new Date();
-      D = D.toISOString();
-      D = D.slice(0,9) + ' ' + D.slice(11,19)
-      console.log(D)
+      for (i=0; i<(param.length-1); i++) {
+        if (param[i] != 0){
+          deployAsset(i+1, param[i]);
+        }
+      }
+      updatePlan(planData[planSelected]["id"], 1);
+      let time = new Date();
+      time = time.toISOString();
+      time = time.slice(0,9) + ' ' + time.slice(11,19)
+      $.post( "/api/report", {'crisis_id': planData[planSelected]["crisis_id"], 'assets_used': "(1,2)", 'casualty': "", 'details': "Initial Report", 'time': time, 'is_final': "false"})
+      
     planModal.close();
     });
-    planModal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
+    planModal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--pull-right tingle-btn--danger', function() {
       planModal.close();
     });
 
@@ -561,10 +561,10 @@
       }
     }
 
-    function addAssetInput(){
+    function addAssetInput(idselector){
       for (i =0; i<Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[0]).length; i++) {
-        $( "#" + "assetGroup" ).append(`
-          <div class="row panel-body">
+        $( "#" + idselector ).append(`
+          <div class="row list-group-item">
             <div class="col-sm-6">
               <div class="form-group" style="height:100%; align-items:center">
                 <p>` + Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[0])[i] + `</p>
@@ -577,10 +577,10 @@
         `)
       }
     };
-    function addCasualtyInput(){
+    function addCasualtyInput(idselector){
       for (i =0; i<Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[0]).length; i++) {
-        $( "#" + "casualtyGroup" ).append(`
-          <div class="row panel-body">
+        $( "#" + idselector ).append(`
+          <div class="row list-group-item">
             <div class="col-sm-6">
               <div class="form-group" style="height:100%; align-items:center">
                 <p>` + Object.keys(assetData).map(x => Object.values(Object.values(assetData)[x-1])[0])[i] + `</p>
