@@ -539,18 +539,21 @@
         param.push($(this)[0]['value']);
       });
       let assets_used = "";
+      let details = 'Initial Report.';
+      details = details + "Executing Plan " + planData[planSelected]["id"] + ". Asset deploy: ";
       for (i=0; i<(param.length-1); i++) {
         if (param[i] != 0){
           deployAsset(i+1, param[i]);
           assets_used += "("+ i + "," + param[i] + "),";
+          details += "("+ assetData[i+1]['name'] + ", " + param[i] + "),";
         }
       }
       assets_used = assets_used.slice(0,-1);
       updatePlan(planData[planSelected]["id"], 1);
       let time = new Date();
       time = time.toISOString();
-      time = time.slice(0,9) + ' ' + time.slice(11,19)
-      $.post( "/api/report", {'crisis_id': planData[planSelected]["crisis_id"], 'assets_used': assets_used, 'casualty': "", 'details': "Initial Report: " + assets_used, 'time': time, 'is_final': "false"})
+      time = time.slice(0,9) + ' ' + time.slice(11,19);
+      $.post( "/api/report", {'crisis_id': planData[planSelected]["crisis_id"], 'assets_used': assets_used, 'casualty': "", 'details': details, 'time': time, 'is_final': "false"})
         .done(function( data ) {
           window.location.reload();
         })
