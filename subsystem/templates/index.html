@@ -281,7 +281,7 @@
             $(this).attr('src', "{{ url_for('static', filename='images/account_logo.jpg') }}");
         });
     });
-    function addReport(){
+    function addReport(reportForm){
       var status = true;
       let crisis_id=document.forms["report-form"]["inputCrisisID"].value;
       let assets_used="";
@@ -306,44 +306,51 @@
       $.post( "/api/report", {'crisis_id': crisis_id, 'assets_used': assets_used, 'casualty': casualty, 'details': details, 'time': time, 'is_final': is_final})
         .done(function(data) {
           if (is_final == true){
-            for (i=0; i < data['report']['assets_used'].length; i++) {
-              for (i2=0; i2 < data['report']['casualty'].length; i2++) {
+            k = [];
+            for (let i=0; i < data['report']['assets_used'].length; i++) {
+              for (let i2=0; i2 < data['report']['casualty'].length; i2++) {
                 if (data['report']['casualty'][i2][0] == data['report']['assets_used'][i][0]){
                   data['report']['assets_used'][i][1] -= data['report']['casualty'][i2][1];
                   break;
                 }
               }
-              $.post( "/api/asset/" + data['report']['assets_used'][i][0], {'add': "-" + data['report']['assets_used'][i][1]})
-                .done(function(){
-                })
-                .fail(function(data){
-                  alert("fail");
-                  return false;
-                })
+              k.push(deployAsset(data['report']['assets_used'][i][0], '-'+ data['report']['assets_used'][i][1]));
             }
+            Promise.all(k).then(function(values){
+              if (values.includes(1)){
+                alert("Wrong Value for assets returned")
+              }
+              else{
+                reportForm.submit();
+              }
+            })
           }
+          else {return true;}
         }, "json")
         .fail(function(data) {
-          alert("Fail");
+          alert("Posting Report failed");
           return false;
         })
-      return status;
+      return false;
     }
     function updatePlan(plan_id, progress){
       $.post( "/api/plan/" + plan_id, {'progress': progress})
         .done(function() {
         })
         .fail(function(data) {
-          alert('fail');
+          alert('Updating Plan failed');
         })
     }
-    function deployAsset(asset_id, number){
-      $.post( "/api/asset/" + asset_id, {'add': number})
+    async function deployAsset(asset_id, number){
+      let status;
+      await $.post( "/api/asset/" + asset_id, {'add': number})
         .done(function() {
+          status = 0;
         })
         .fail(function(data) {
-          alert('fail');
+          status = 1;
         })
+      return status;
     }
     function addEntry(listId,dataList){
       for (var entry in dataList) {
@@ -466,7 +473,7 @@
       }
     });
     reportModal.setContent(`
-      <form id="report-form" style="align-items: flex-start;" onsubmit="return addReport()">
+      <form id="report-form" style="align-items: flex-start;" onsubmit="return addReport(this)">
         <div class="form-group">
           <label for="inputCrisisID">Crisis ID</label>
           <input type="number" class="form-control" id="inputCrisisID" placeholder="Enter crisis ID" min=0 required>

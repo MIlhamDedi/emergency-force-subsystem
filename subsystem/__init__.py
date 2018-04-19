@@ -148,6 +148,8 @@ class asset_api(Resource):
 class asset_update_api(Resource):
     def get(self, asset_id):
         asset_data = Asset.query.filter_by(id=asset_id).first()
+        if asset_data is None:
+            return {"error": "No asset with that id"}, 400
         a = asset_data.convert()
         return {a[0]: a[1]}
 
@@ -159,7 +161,7 @@ class asset_update_api(Resource):
             return {'error': ""}, 200
         except KeyError:
             return {'error': "Not Enough Data"}, 400
-        except (DataError, ValueError, TypeError):
+        except (DataError, ValueError, TypeError, AttributeError):
             return {'error': "Wrong Type of Data"}, 403
 
 
@@ -253,6 +255,8 @@ class fetch_plan(Resource):
 class plan_update_api(Resource):
     def get(self, plan_id):
         plan_data = Plan.query.filter_by(id=plan_id).first()
+        if plan_data is None:
+            return {"error": "No Plan with that id"}, 400
         return plan_data.convert()
 
     def post(self, plan_id):
@@ -263,7 +267,7 @@ class plan_update_api(Resource):
             return {'error': "", 'plan': plan_data.convert()}, 200
         except KeyError:
             return {'error': "Not Enough Data"}, 400
-        except (DataError, ValueError):
+        except (DataError, ValueError, AttributeError):
             return {'error': "Wrong Type of Data"}, 400
         except IntegrityError:
             return {'error': "Plan doesn't exist"}, 400
