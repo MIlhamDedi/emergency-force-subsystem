@@ -105,7 +105,7 @@
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">HEADER</li>
           <!-- Optionally, you can add icons to the links -->
-          <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
+          <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Home</span></a></li>
           <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
           <li class="treeview">
             <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
@@ -194,6 +194,8 @@
                   <h3 class="box-title">Plan List</h3>
     
                   <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" onclick="fetchPlan();" ><i class="fa fa-refresh"></i>
+                    </button>
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
                   </div>
@@ -597,6 +599,16 @@
       if (indicator=="report") {reportModal.checkOverflow()}
       else {planModal.checkOverflow()}
     }
+  </script>
+  <script>
+    function fetchPlan(){
+      $.get( "/api/cmo")
+        .done(function( data ) {
+          if (data['added_id'].length != 0){
+            alert("New Plan received. Refresh to Update")
+          }
+        });
+      }
   </script>
 </body>
 </html>

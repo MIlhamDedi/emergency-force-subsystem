@@ -3,10 +3,11 @@ from flask_restplus import Resource, Api
 from flask_login import LoginManager, login_user, logout_user,\
     login_required, current_user
 from subsystem.data_model import db, Asset, Plan, Report, User
-from subsystem.config import SECRET_KEY, POSTGRES_URI
+from subsystem.config import SECRET_KEY, POSTGRES_URI, CMO_URL
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import DataError, IntegrityError
 from uuid import uuid4
+import requests
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -210,6 +211,42 @@ class plan_api(Resource):
             return {'error': "Wrong Type of Data"}, 400
         except IntegrityError:
             return {'error': "Duplicate value of Data"}, 403
+
+
+@api.route('/api/cmo')
+class fetch_plan(Resource):
+    def get(self):
+        r1 = requests.get(CMO_URL)
+        cmo_plan_list = r1.json()
+        ef_plan_id_list = [
+            a.id for a in Plan.query.order_by(Plan.id.desc()).all()
+        ]
+        added_id = []
+        for _ in cmo_plan_list:
+            if _['solution_id'] not in ef_plan_id_list:
+                try:
+                    newPlan = Plan(
+                        id=_['solution_id'],
+                        crisis_id=_['crisis_id'],
+                        details=_['details'],
+                        time=_['time'])
+                    db.session.add(newPlan)
+                    db.session.commit()
+                    added_id.append(_['solution_id'])
+                except KeyError:
+                    return {
+                        'error': "Not Enough Data on id _['solution_id']"
+                    }, 400
+                except DataError:
+                    return {
+                        'error': "Wrong Type of Data on id _['solution_id']"
+                    }, 400
+                except IntegrityError:
+                    return {
+                        'error':
+                        "Duplicate value of Data on id _['solution_id']"
+                    }, 403
+        return {'error': 'none', 'added_id': added_id}, 201
 
 
 @api.route('/api/plan/<int:plan_id>')
