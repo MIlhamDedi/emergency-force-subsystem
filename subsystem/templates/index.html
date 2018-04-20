@@ -636,7 +636,10 @@
             alert("New Plan received. Refresh to Update")
           }
           else{
-            alert("No new plan")
+            rs = confirm("Refresh to get new Plan?");
+            if (rs==true){
+              window.location.reload();
+            }
           }
         });
       }
